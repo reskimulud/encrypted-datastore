@@ -34,6 +34,8 @@ class AES private constructor(
         w = expandKey.expandKey(key, nk, nb, nr)
     }
 
+    fun getW(): IntArray = w
+
 
     /**
      * Class Builder
@@ -65,12 +67,12 @@ class AES private constructor(
         fun build(): AES = getInstance(this)
     }
 
-    companion object {
+    private companion object {
         @Volatile
         private var INSTANCE: AES? = null
 
         @JvmStatic
-        fun getInstance(builder: Builder): AES =
+        private fun getInstance(builder: Builder): AES =
             INSTANCE ?: synchronized(this) {
                 val expandKey = ExpandKey()
                 val encryptAES = EncryptAES()
