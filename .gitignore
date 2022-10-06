@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+/src/main/java/com/mankart/encrypteddatastore/App.kt

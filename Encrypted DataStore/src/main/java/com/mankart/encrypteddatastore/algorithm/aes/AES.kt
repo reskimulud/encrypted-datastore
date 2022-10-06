@@ -7,6 +7,7 @@
  */
 
 package com.mankart.encrypteddatastore.algorithm.aes
+
 import com.mankart.encrypteddatastore.algorithm.aes.core.DecryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.EncryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.ExpandKey
@@ -17,10 +18,10 @@ class AES private constructor(
     encryptAES: EncryptAES,
     decryptAES: DecryptAES
 ) {
-    private var key: ByteArray = builder.key
+    private var key: IntArray = builder.key
     private var iv: ByteArray = builder.iv
 
-    private var w: ByteArray
+    private var w: IntArray
     private var nb: Int = 0
     private var nk: Int = 0
     private var nr: Int = 0
@@ -30,7 +31,7 @@ class AES private constructor(
         nk = 8
         nr = 14
 
-        w = expandKey.expandKey(key)
+        w = expandKey.expandKey(key, nk, nb, nr)
     }
 
 
@@ -39,11 +40,20 @@ class AES private constructor(
      * Untuk membuat instance class AES dengan menerapkan pattern builder
      */
     class Builder {
-        internal lateinit var key: ByteArray
+        internal lateinit var key: IntArray
         internal lateinit var iv: ByteArray
 
         fun setKey(key: String): Builder {
-            this.key = key.toByteArray()
+            val mKey = key.toByteArray()
+
+            if (mKey.size != 32) {
+                throw IllegalArgumentException("Panjang kunci hanya diperbolehkan sebesar 256-bit")
+            }
+
+            this.key = IntArray(mKey.size)
+            for (i in key.indices) {
+                this.key[i] = mKey[i].toInt()
+            }
             return this
         }
 
