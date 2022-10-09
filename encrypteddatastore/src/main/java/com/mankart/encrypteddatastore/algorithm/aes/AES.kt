@@ -11,6 +11,10 @@ package com.mankart.encrypteddatastore.algorithm.aes
 import com.mankart.encrypteddatastore.algorithm.aes.core.DecryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.EncryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.ExpandKey
+import com.mankart.encrypteddatastore.algorithm.aes.utils.Helper.xor
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.*
 
 class AES private constructor(
     builder: Builder,
@@ -20,21 +24,36 @@ class AES private constructor(
 ) {
     private var key: IntArray = builder.key
     private var iv: ByteArray = builder.iv
-
     private var w: IntArray
-    private var nb: Int = 0
-    private var nk: Int = 0
-    private var nr: Int = 0
+
+    private val encryptAES: EncryptAES
 
     init {
-        nb = 4
-        nk = 8
-        nr = 14
-
         w = expandKey.expandKey(key, nk, nb, nr)
+        this.encryptAES = encryptAES
+        this.encryptAES.w = w
     }
 
     fun getW(): IntArray = w
+
+    fun encrypt(text: ByteArray): ByteArray {
+        var previousBlock: ByteArray? = null
+        val out = ByteArrayOutputStream()
+        var i = 0
+        while (i < text.size) {
+            var part = Arrays.copyOfRange(text, i, i + 16)
+            try {
+                if (previousBlock == null) previousBlock = iv
+                part = xor(previousBlock, part)
+                previousBlock = encryptAES.encrypt(part)
+                out.write(previousBlock)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            i += 16
+        }
+        return out.toByteArray()
+    }
 
 
     /**
@@ -68,6 +87,10 @@ class AES private constructor(
     }
 
     private companion object {
+        private var nb: Int = 4
+        private var nr: Int = 14
+        private var nk: Int = 8
+
         @Volatile
         private var INSTANCE: AES? = null
 
@@ -75,7 +98,7 @@ class AES private constructor(
         private fun getInstance(builder: Builder): AES =
             INSTANCE ?: synchronized(this) {
                 val expandKey = ExpandKey()
-                val encryptAES = EncryptAES()
+                val encryptAES = EncryptAES(nb, nr)
                 val decryptAES = DecryptAES()
                 INSTANCE ?: AES(builder, expandKey, encryptAES, decryptAES)
             }.also { INSTANCE = it }

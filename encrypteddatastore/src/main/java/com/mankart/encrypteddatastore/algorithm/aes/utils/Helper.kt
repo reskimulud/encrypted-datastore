@@ -10,6 +10,7 @@ package com.mankart.encrypteddatastore.algorithm.aes.utils
 
 import com.mankart.encrypteddatastore.algorithm.aes.utils.Constant.invSBox
 import com.mankart.encrypteddatastore.algorithm.aes.utils.Constant.sBox
+import kotlin.experimental.xor
 
 object Helper {
     internal fun subWord(word: Int): Int {
@@ -52,5 +53,14 @@ object Helper {
         return if (b and 0x80 == 0) {
             b shl 1
         } else b shl 1 xor 0x11b
+    }
+
+    internal fun xor(a: ByteArray?, b: ByteArray): ByteArray {
+        val result = ByteArray(Math.min(a!!.size, b.size))
+        for (j in result.indices) {
+            val xor: Byte = a[j] xor b[j]
+            result[j] = (0xff and xor.toInt()).toByte()
+        }
+        return result
     }
 }
