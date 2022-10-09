@@ -63,4 +63,12 @@ object Helper {
         }
         return result
     }
+
+    internal fun ByteArray.trim(): ByteArray {
+        var indices = this.size - 1
+        while (indices >= 0 && this[indices] == 0.toByte()) {
+            indices--
+        }
+        return this.copyOf(indices + 1)
+    }
 }

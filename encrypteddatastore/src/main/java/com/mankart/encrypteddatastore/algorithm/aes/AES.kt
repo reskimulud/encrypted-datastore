@@ -11,6 +11,7 @@ package com.mankart.encrypteddatastore.algorithm.aes
 import com.mankart.encrypteddatastore.algorithm.aes.core.DecryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.EncryptAES
 import com.mankart.encrypteddatastore.algorithm.aes.core.ExpandKey
+import com.mankart.encrypteddatastore.algorithm.aes.utils.Helper.trim
 import com.mankart.encrypteddatastore.algorithm.aes.utils.Helper.xor
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -27,14 +28,17 @@ class AES private constructor(
     private var w: IntArray
 
     private val encryptAES: EncryptAES
+    private val decryptAES: DecryptAES
 
     init {
         w = expandKey.expandKey(key, nk, nb, nr)
         this.encryptAES = encryptAES
-        this.encryptAES.w = w
+        this.decryptAES = decryptAES
+        w.let {
+            this.encryptAES.w = it
+            this.decryptAES.w = it
+        }
     }
-
-    fun getW(): IntArray = w
 
     fun encrypt(text: ByteArray): ByteArray {
         var previousBlock: ByteArray? = null
@@ -47,6 +51,32 @@ class AES private constructor(
                 part = xor(previousBlock, part)
                 previousBlock = encryptAES.encrypt(part)
                 out.write(previousBlock)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            i += 16
+        }
+        return out.toByteArray()
+    }
+
+    fun decrypt(text: ByteArray): ByteArray {
+        var previousBlock: ByteArray? = null
+        val out = ByteArrayOutputStream()
+        var i = 0
+        while (i < text.size) {
+            val lastBlock = (text.size - i) <= 16
+            val part = Arrays.copyOfRange(text, i, i + 16)
+            var tmp = decryptAES.decrypt(part)
+            try {
+                if (previousBlock == null) previousBlock = iv
+                tmp = xor(previousBlock, tmp)
+                previousBlock = part
+
+                val trimmedByteArray =
+                    if (lastBlock) tmp.trim()
+                    else tmp
+
+                out.write(trimmedByteArray)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -99,7 +129,7 @@ class AES private constructor(
             INSTANCE ?: synchronized(this) {
                 val expandKey = ExpandKey()
                 val encryptAES = EncryptAES(nb, nr)
-                val decryptAES = DecryptAES()
+                val decryptAES = DecryptAES(nb, nr)
                 INSTANCE ?: AES(builder, expandKey, encryptAES, decryptAES)
             }.also { INSTANCE = it }
     }
