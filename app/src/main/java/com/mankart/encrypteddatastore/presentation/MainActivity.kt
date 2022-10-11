@@ -19,9 +19,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        factory = ViewModelFactory.getInstance(this)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        factory = ViewModelFactory.getInstance(this)
+
+        val etEmail = binding.etEmail
+
+        binding.btnSubmit.setOnClickListener {
+            if (etEmail.text?.isBlank() == false) {
+                viewModel.setUserEmail(etEmail.text.toString())
+            }
+        }
+        binding.btnLoad.setOnClickListener {
+            viewModel.userEmail.observe(this) {
+                binding.tvEmail.text = it
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@
 
 package com.mankart.encrypteddatastore.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -20,8 +21,9 @@ class UserViewModel(
 ): ViewModel() {
     val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
 
-    fun setUerEmail(email: String) {
+    fun setUserEmail(email: String) {
         viewModelScope.launch {
+            Log.e("ViewModel", "SetUserEmail")
             repository.updateUserEmail(email)
         }
     }
