@@ -28,7 +28,11 @@ object EncryptedDataStore {
         edit {
             val text = Json.encodeToString(value)
             val encryptedValue = aes.encrypt(text.toByteArray())
-            editStore.invoke(it, encryptedValue.decodeToString())
+
+            val hexStringFromByteArray =
+                encryptedValue.joinToString(""){ "%02x".format(it.toInt() and 0xFF) }
+
+            editStore.invoke(it, hexStringFromByteArray)
         }
     }
 
@@ -40,7 +44,10 @@ object EncryptedDataStore {
             val value = fetchValue(preference)
 
             if (value.isNotEmpty() && value != "") {
-                val decryptedValue = aes.decrypt(value.toByteArray())
+                val byteArrayFromHexString =
+                    value.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+
+                val decryptedValue = aes.decrypt(byteArrayFromHexString)
                 val jsonEncode = Json { encodeDefaults = true }
                 jsonEncode.decodeFromString(decryptedValue.decodeToString())
             } else {
