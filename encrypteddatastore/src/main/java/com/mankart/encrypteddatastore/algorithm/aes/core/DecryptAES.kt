@@ -53,17 +53,20 @@ class DecryptAES(nb: Int, nr: Int) {
         }
         actual = nr
         addRoundKey(out, actual)
-        actual = nr - 1
-        while (actual > 0) {
-            invShiftRows(out)
-            invSubBytes(out)
-            addRoundKey(out, actual)
-            invMixColumns(out)
-            actual--
-        }
         invShiftRows(out)
         invSubBytes(out)
+
+        actual = nr - 1
+        while (actual > 0) {
+            addRoundKey(out, actual)
+            invMixColumns(out)
+            invShiftRows(out)
+            invSubBytes(out)
+            actual--
+        }
+
         addRoundKey(out, actual)
+
         return out
     }
 
