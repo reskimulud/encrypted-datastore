@@ -11,6 +11,7 @@ package com.mankart.encrypteddatastore.algorithm.aes.utils
 import com.mankart.encrypteddatastore.algorithm.aes.utils.Constant.invSBox
 import com.mankart.encrypteddatastore.algorithm.aes.utils.Constant.sBox
 import kotlin.experimental.xor
+import kotlin.math.min
 
 object Helper {
     internal fun subWord(word: Int): Int {
@@ -35,16 +36,17 @@ object Helper {
         return subWord
     }
 
+    @Suppress("NAME_SHADOWING")
     internal fun multiple(a: Int, b: Int): Int {
         var a = a
         var b = b
         var sum = 0
-        while (a != 0) { // while it is not 0
-            if (a and 1 != 0) { // check if the first bit is 1
-                sum = sum xor b // add b from the smallest bit
+        while (a != 0) {
+            if (a and 1 != 0) {
+                sum = sum xor b
             }
-            b = xTime(b) // bit shift left mod 0x11b if necessary;
-            a = a ushr 1 // lowest bit of "a" was used so shift right
+            b = xTime(b)
+            a = a ushr 1
         }
         return sum
     }
@@ -56,7 +58,7 @@ object Helper {
     }
 
     internal fun xor(a: ByteArray?, b: ByteArray): ByteArray {
-        val result = ByteArray(Math.min(a!!.size, b.size))
+        val result = ByteArray(min(a!!.size, b.size))
         for (j in result.indices) {
             val xor: Byte = a[j] xor b[j]
             result[j] = (0xff and xor.toInt()).toByte()
