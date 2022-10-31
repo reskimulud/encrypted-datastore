@@ -6,7 +6,17 @@ plugins {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.reskimulud'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'encrypted-datastore'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 dependencies {
     implementation "androidx.datastore:datastore-preferences-core:1.0.0"
