@@ -10,6 +10,7 @@ package io.reskimulud.encrypteddatastore.data.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.reskimulud.encrypteddatastore.BuildConfig.CIPHER_KEY
 import io.github.reskimulud.encrypteddatastore.BuildConfig.IV
@@ -17,20 +18,29 @@ import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureEdit
 import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureMap
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PreferencesDataStore(
-    private val dataStore: DataStore<Preferences>,
+    private val encryptedDataStore: DataStore<Preferences>,
+    private val unencryptedDataStore: DataStore<Preferences>,
     private val aes: AES
 ) {
 
+    // Encrypted DataStore (DataStore yang dienkripsi)
     fun getUserEmail(): Flow<String> =
-        dataStore.data.secureMap(aes) {
+        encryptedDataStore.data.secureMap(aes) {
             it[USER_EMAIL_KEY] ?: ""
         }
 
     suspend fun setUserEmail(email: String) =
-        dataStore.secureEdit(email, aes) { preferences, encryptedValue ->
+        encryptedDataStore.secureEdit(email, aes) { preferences, encryptedValue ->
             preferences[USER_EMAIL_KEY] = encryptedValue
+        }
+
+    // Unencrypted DataStore (DataStore yang tidak dienkripsi)
+    suspend fun setUnencryptedUserEmail(email: String) =
+        unencryptedDataStore.edit {
+            it[USER_EMAIL_KEY] = email
         }
 
     companion object {
@@ -40,13 +50,16 @@ class PreferencesDataStore(
         private var INSTANCE: PreferencesDataStore? = null
 
         @JvmStatic
-        fun getInstance(dataStore: DataStore<Preferences>): PreferencesDataStore =
+        fun getInstance(
+            encryptedDataStore: DataStore<Preferences>,
+            unencryptedDataStore: DataStore<Preferences>
+        ): PreferencesDataStore =
             INSTANCE ?: synchronized(this) {
                 val aes = AES.Builder()
                     .setKey(CIPHER_KEY)
                     .setIv(IV)
                     .build()
-                val instance = PreferencesDataStore(dataStore, aes)
+                val instance = PreferencesDataStore(encryptedDataStore, unencryptedDataStore, aes)
                 INSTANCE = instance
                 instance
             }

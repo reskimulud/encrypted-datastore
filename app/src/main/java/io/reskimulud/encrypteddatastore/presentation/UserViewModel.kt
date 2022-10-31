@@ -25,6 +25,7 @@ class UserViewModel(
         viewModelScope.launch {
             Log.e("ViewModel", "SetUserEmail")
             repository.updateUserEmail(email)
+            repository.updateUnencryptedUserEmail(email)
         }
     }
 }

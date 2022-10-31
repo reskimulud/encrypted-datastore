@@ -4,17 +4,19 @@ plugins {
 }
 
 android {
-    namespace 'com.mankart.encrypteddatastore'
+    namespace 'io.github.reskimulud.encrypteddatastore'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.mankart.encrypteddatastore"
+        applicationId "io.github.reskimulud.encrypteddatastore"
         minSdk 21
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField('String', 'CIPHER_KEY', "\"$cipherKey\"")
+        buildConfigField('String', 'IV', "\"$iv\"")
     }
 
     buildTypes {

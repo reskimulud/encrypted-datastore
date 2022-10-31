@@ -21,6 +21,10 @@ class UserRepository(
     suspend fun updateUserEmail(email: String) =
         dataStore.setUserEmail(email)
 
+    // unencrypted datastore
+    suspend fun updateUnencryptedUserEmail(email: String) =
+        dataStore.setUnencryptedUserEmail(email)
+
     companion object {
         @Volatile
         private var INSTANCE: UserRepository? = null

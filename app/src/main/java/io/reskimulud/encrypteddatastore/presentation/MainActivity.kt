@@ -7,9 +7,10 @@ import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.mankart.encrypteddatastore.databinding.ActivityMainBinding
+import io.github.reskimulud.encrypteddatastore.databinding.ActivityMainBinding
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "users_data")
+val Context.encryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "encrypted_users_data")
+val Context.unencryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "unencrypted_users_data")
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
