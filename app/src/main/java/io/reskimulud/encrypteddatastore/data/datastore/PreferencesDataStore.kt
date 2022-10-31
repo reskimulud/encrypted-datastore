@@ -18,7 +18,6 @@ import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureEdit
 import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureMap
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class PreferencesDataStore(
     private val encryptedDataStore: DataStore<Preferences>,
@@ -27,24 +26,56 @@ class PreferencesDataStore(
 ) {
 
     // Encrypted DataStore (DataStore yang dienkripsi)
+    fun getUserName(): Flow<String> =
+        encryptedDataStore.data.secureMap(aes) {
+            it[USER_NAME_KEY] ?: ""
+        }
+
+    suspend fun setUserName(name: String) =
+        encryptedDataStore.secureEdit(name, aes) { preferences, encryptedName ->
+            preferences[USER_NAME_KEY] = encryptedName
+        }
+
     fun getUserEmail(): Flow<String> =
         encryptedDataStore.data.secureMap(aes) {
             it[USER_EMAIL_KEY] ?: ""
         }
 
     suspend fun setUserEmail(email: String) =
-        encryptedDataStore.secureEdit(email, aes) { preferences, encryptedValue ->
-            preferences[USER_EMAIL_KEY] = encryptedValue
+        encryptedDataStore.secureEdit(email, aes) { preferences, encryptedEmail ->
+            preferences[USER_EMAIL_KEY] = encryptedEmail
+        }
+
+    fun getUserApiKey(): Flow<String> =
+        encryptedDataStore.data.secureMap(aes) {
+            it[USER_API_KEY] ?: ""
+        }
+
+    suspend fun setUserApiKey(apiKey: String) =
+        encryptedDataStore.secureEdit(apiKey, aes) { preferences, encryptedApiKey ->
+            preferences[USER_API_KEY] = encryptedApiKey
         }
 
     // Unencrypted DataStore (DataStore yang tidak dienkripsi)
+    suspend fun setUnencryptedUserName(name: String) =
+        unencryptedDataStore.edit {
+            it[USER_NAME_KEY] = name
+        }
+
     suspend fun setUnencryptedUserEmail(email: String) =
         unencryptedDataStore.edit {
             it[USER_EMAIL_KEY] = email
         }
 
+    suspend fun setUnencryptedApiKey(apiKey: String) =
+        unencryptedDataStore.edit {
+            it[USER_API_KEY] = apiKey
+        }
+
     companion object {
+        private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+        private val USER_API_KEY = stringPreferencesKey("user_api_key")
 
         @Volatile
         private var INSTANCE: PreferencesDataStore? = null

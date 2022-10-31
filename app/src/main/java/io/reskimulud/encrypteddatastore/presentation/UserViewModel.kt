@@ -19,13 +19,31 @@ import kotlinx.coroutines.launch
 class UserViewModel(
     private val repository: UserRepository
 ): ViewModel() {
+    val userName: LiveData<String> = repository.getUserName().asLiveData()
     val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
+    val userApiKey: LiveData<String> = repository.getUserApiKey().asLiveData()
+
+    fun setUserName(name: String) {
+        viewModelScope.launch {
+            Log.e("ViewModel", "SetUserName")
+            repository.updateUserName(name)
+            repository.updateUnencryptedUserName(name)
+        }
+    }
 
     fun setUserEmail(email: String) {
         viewModelScope.launch {
             Log.e("ViewModel", "SetUserEmail")
             repository.updateUserEmail(email)
             repository.updateUnencryptedUserEmail(email)
+        }
+    }
+
+    fun setUserApiKey(apiKey: String) {
+        viewModelScope.launch {
+            Log.e("ViewModel", "SetUserApiKey")
+            repository.updateUserApiKey(apiKey)
+            repository.updateUnencryptedUserApiKey(apiKey)
         }
     }
 }

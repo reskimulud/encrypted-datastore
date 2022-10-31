@@ -15,15 +15,34 @@ class UserRepository(
     private val dataStore: PreferencesDataStore
 ) {
 
+    // encrypted datastore
+    fun getUserName(): Flow<String> =
+        dataStore.getUserName()
+
+    suspend fun updateUserName(name: String) =
+        dataStore.setUserName(name)
+
     fun getUserEmail(): Flow<String> =
         dataStore.getUserEmail()
 
     suspend fun updateUserEmail(email: String) =
         dataStore.setUserEmail(email)
 
+    fun getUserApiKey(): Flow<String> =
+        dataStore.getUserApiKey()
+
+    suspend fun updateUserApiKey(apiKey: String) =
+        dataStore.setUserApiKey(apiKey)
+
     // unencrypted datastore
+    suspend fun updateUnencryptedUserName(name: String) =
+        dataStore.setUnencryptedUserName(name)
+
     suspend fun updateUnencryptedUserEmail(email: String) =
         dataStore.setUnencryptedUserEmail(email)
+
+    suspend fun updateUnencryptedUserApiKey(apiKey: String) =
+        dataStore.setUnencryptedApiKey(apiKey)
 
     companion object {
         @Volatile
