@@ -11,6 +11,8 @@ package io.reskimulud.encrypteddatastore.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import io.github.reskimulud.encrypteddatastore.BuildConfig.CIPHER_KEY
+import io.github.reskimulud.encrypteddatastore.BuildConfig.IV
 import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureEdit
 import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureMap
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
@@ -41,8 +43,8 @@ class PreferencesDataStore(
         fun getInstance(dataStore: DataStore<Preferences>): PreferencesDataStore =
             INSTANCE ?: synchronized(this) {
                 val aes = AES.Builder()
-                    .setKey("Zr4u7x!A%D*G-KaPdSgVkXp2s5v8y/B*")
-                    .setIv("WmZq4t7w!z%C*F-J")
+                    .setKey(CIPHER_KEY)
+                    .setIv(IV)
                     .build()
                 val instance = PreferencesDataStore(dataStore, aes)
                 INSTANCE = instance
