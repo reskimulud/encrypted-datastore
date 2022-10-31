@@ -11,9 +11,9 @@ package io.reskimulud.encrypteddatastore.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.mankart.encrypteddatastore.EncryptedDataStore.secureEdit
-import com.mankart.encrypteddatastore.EncryptedDataStore.secureMap
-import com.mankart.encrypteddatastore.algorithm.aes.AES
+import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureEdit
+import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureMap
+import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import kotlinx.coroutines.flow.Flow
 
 class PreferencesDataStore(
