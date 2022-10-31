@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2022
+ * Project  : Encrypted DataStore
+ * Created by Reski Mulud Muchamad on 11-10-2022
+ * GitHub   : https://github.com/reskimulud
+ * LinkedIn : https://linkedin.com/in/reskimulud
+ */
+
+package io.reskimulud.encrypteddatastore.presentation
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import io.reskimulud.encrypteddatastore.data.UserRepository
+import kotlinx.coroutines.launch
+
+class UserViewModel(
+    private val repository: UserRepository
+): ViewModel() {
+    val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
+
+    fun setUserEmail(email: String) {
+        viewModelScope.launch {
+            Log.e("ViewModel", "SetUserEmail")
+            repository.updateUserEmail(email)
+        }
+    }
+}
