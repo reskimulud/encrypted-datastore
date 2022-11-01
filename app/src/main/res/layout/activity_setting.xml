@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/name"
             android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:inputType="textPersonName"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -55,6 +57,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/email"
             android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:inputType="textEmailAddress"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -82,6 +86,8 @@
             android:layout_height="100dp"
             android:hint="@string/api_key"
             android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:inputType="textMultiLine"
             tools:ignore="SpeakableTextPresentCheck" />
 
