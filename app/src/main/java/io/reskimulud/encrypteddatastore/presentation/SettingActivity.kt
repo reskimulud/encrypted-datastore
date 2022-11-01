@@ -1,6 +1,5 @@
 package io.reskimulud.encrypteddatastore.presentation
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -52,12 +51,7 @@ class SettingActivity : AppCompatActivity() {
             setUserApiKey(apiKey)
         }
 
-        startActivity(
-            Intent(
-                this@SettingActivity,
-                MainActivity::class.java
-            )
-        )
+        finish()
         Toast.makeText(this@SettingActivity, "Field Updated!", Toast.LENGTH_SHORT).show()
     }
 }
