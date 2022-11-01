@@ -27,8 +27,8 @@ class PreferencesDataStore(
 
     // Encrypted DataStore (DataStore yang dienkripsi)
     fun getUserName(): Flow<String> =
-        encryptedDataStore.data.secureMap(aes) {
-            it[USER_NAME_KEY] ?: ""
+        encryptedDataStore.data.secureMap(aes, DEFAULT_VALUE) {
+            it[USER_NAME_KEY] ?: DEFAULT_VALUE
         }
 
     suspend fun setUserName(name: String) =
@@ -37,8 +37,8 @@ class PreferencesDataStore(
         }
 
     fun getUserEmail(): Flow<String> =
-        encryptedDataStore.data.secureMap(aes) {
-            it[USER_EMAIL_KEY] ?: ""
+        encryptedDataStore.data.secureMap(aes, DEFAULT_VALUE) {
+            it[USER_EMAIL_KEY] ?: DEFAULT_VALUE
         }
 
     suspend fun setUserEmail(email: String) =
@@ -47,8 +47,8 @@ class PreferencesDataStore(
         }
 
     fun getUserApiKey(): Flow<String> =
-        encryptedDataStore.data.secureMap(aes) {
-            it[USER_API_KEY] ?: ""
+        encryptedDataStore.data.secureMap(aes, DEFAULT_VALUE) {
+            it[USER_API_KEY] ?: DEFAULT_VALUE
         }
 
     suspend fun setUserApiKey(apiKey: String) =
@@ -76,6 +76,8 @@ class PreferencesDataStore(
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
         private val USER_API_KEY = stringPreferencesKey("user_api_key")
+
+        private const val DEFAULT_VALUE = "empty"
 
         @Volatile
         private var INSTANCE: PreferencesDataStore? = null

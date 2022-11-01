@@ -38,12 +38,13 @@ object EncryptedDataStore {
 
     inline fun <reified T> Flow<Preferences>.secureMap(
         aes: AES,
+        defaultValue: T,
         crossinline fetchValue: (value: Preferences) -> String,
     ): Flow<T> =
         map { preference ->
             val value = fetchValue(preference)
 
-            if (value.isNotEmpty() && value != "") {
+            if (value.isNotEmpty() && value != defaultValue) {
                 val byteArrayFromHexString =
                     value.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 
@@ -51,7 +52,7 @@ object EncryptedDataStore {
                 val jsonEncode = Json { encodeDefaults = true }
                 jsonEncode.decodeFromString(decryptedValue.decodeToString())
             } else {
-                value as T
+                defaultValue
             }
         }
 }
