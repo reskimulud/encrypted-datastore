@@ -1,12 +1,16 @@
 package io.reskimulud.encrypteddatastore.presentation
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.ActivityMainBinding
 
 val Context.encryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "encrypted_users_data")
@@ -36,6 +40,25 @@ class MainActivity : AppCompatActivity() {
             viewModel.userEmail.observe(this) {
                 binding.tvEmail.text = it
             }
+        }
+
+        supportActionBar?.title = "Profile"
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.setting -> {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> false
         }
     }
 }
