@@ -10,11 +10,17 @@ package io.reskimulud.encrypteddatastore.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import io.reskimulud.encrypteddatastore.data.UserRepository
+import io.reskimulud.encrypteddatastore.data.network.ImageResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UserViewModel(
     private val repository: UserRepository
@@ -22,6 +28,9 @@ class UserViewModel(
     val userName: LiveData<String> = repository.getUserName().asLiveData()
     val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
     val userApiKey: LiveData<String> = repository.getUserApiKey().asLiveData()
+
+    private var _imageUrl = MutableLiveData<String>()
+    val imageUrl: LiveData<String> = _imageUrl
 
     fun setUserName(name: String) {
         viewModelScope.launch {
@@ -45,5 +54,29 @@ class UserViewModel(
             repository.updateUserApiKey(apiKey)
             repository.updateUnencryptedUserApiKey(apiKey)
         }
+    }
+
+    fun getRandomImage(apiKey: String) {
+        val client = repository.getRandomImage(apiKey)
+        client.enqueue(object: Callback<List<ImageResponse>> {
+            override fun onResponse(
+                call: Call<List<ImageResponse>>,
+                response: Response<List<ImageResponse>>
+            ) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        _imageUrl.postValue(
+                            responseBody?.get(0)?.urls?.small
+                        )
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<ImageResponse>>, t: Throwable) {
+                Log.e("UserViewModel", t.message.toString())
+            }
+
+        })
     }
 }

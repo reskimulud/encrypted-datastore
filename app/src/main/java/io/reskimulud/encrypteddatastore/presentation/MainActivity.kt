@@ -46,6 +46,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.userEmail.observe(this) {
             binding.tvEmail.text = it
         }
+        viewModel.imageUrl.observe(this) {
+            Glide.with(this)
+                .load(it)
+                .into(binding.ivImage)
+        }
+        viewModel.userApiKey.observe(this) {
+            viewModel.getRandomImage(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
