@@ -16,6 +16,5 @@ interface ApiService {
     @GET("photos/random")
     fun getRandomImage(
         @Query("client_id") clientId: String, // api key
-        @Query("count") count: Int = 1
-    ): Call<List<ImageResponse>>
+    ): Call<ImageResponse>
 }

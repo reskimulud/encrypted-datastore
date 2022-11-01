@@ -50,7 +50,7 @@ class UserRepository(
 
 
     // get data from internet
-    fun getRandomImage(apiKey: String): Call<List<ImageResponse>> =
+    fun getRandomImage(apiKey: String): Call<ImageResponse> =
         apiService.getRandomImage(apiKey)
 
     companion object {
