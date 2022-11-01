@@ -9,10 +9,14 @@
 package io.reskimulud.encrypteddatastore.data
 
 import io.reskimulud.encrypteddatastore.data.datastore.PreferencesDataStore
+import io.reskimulud.encrypteddatastore.data.network.ApiService
+import io.reskimulud.encrypteddatastore.data.network.ImageResponse
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Call
 
 class UserRepository(
-    private val dataStore: PreferencesDataStore
+    private val dataStore: PreferencesDataStore,
+    private val apiService: ApiService
 ) {
 
     // encrypted datastore
@@ -44,14 +48,22 @@ class UserRepository(
     suspend fun updateUnencryptedUserApiKey(apiKey: String) =
         dataStore.setUnencryptedApiKey(apiKey)
 
+
+    // get data from internet
+    fun getRandomImage(apiKey: String): Call<List<ImageResponse>> =
+        apiService.getRandomImage(apiKey)
+
     companion object {
         @Volatile
         private var INSTANCE: UserRepository? = null
 
         @JvmStatic
-        fun getInstance(dataStore: PreferencesDataStore): UserRepository =
+        fun getInstance(
+            dataStore: PreferencesDataStore,
+            apiService: ApiService
+        ): UserRepository =
             INSTANCE ?: synchronized(this) {
-                val instance = UserRepository(dataStore)
+                val instance = UserRepository(dataStore, apiService)
                 INSTANCE = instance
                 instance
             }
