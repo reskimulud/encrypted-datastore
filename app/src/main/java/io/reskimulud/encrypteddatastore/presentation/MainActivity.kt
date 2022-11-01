@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.bumptech.glide.Glide
 import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.ActivityMainBinding
 
@@ -29,20 +30,22 @@ class MainActivity : AppCompatActivity() {
 
         factory = ViewModelFactory.getInstance(this)
 
-        val etEmail = binding.etEmail
-
-        binding.btnSubmit.setOnClickListener {
-            if (etEmail.text?.isBlank() == false) {
-                viewModel.setUserEmail(etEmail.text.toString())
-            }
-        }
-        binding.btnLoad.setOnClickListener {
-            viewModel.userEmail.observe(this) {
-                binding.tvEmail.text = it
-            }
-        }
+        setupObserver()
 
         supportActionBar?.title = "Profile"
+    }
+
+    private fun setupObserver() {
+        viewModel.userName.observe(this) {
+            binding.tvName.text = it
+
+            Glide.with(this)
+                .load("https://ui-avatars.com/api/?background=random&name=$it")
+                .into(binding.ivProfile)
+        }
+        viewModel.userEmail.observe(this) {
+            binding.tvEmail.text = it
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
