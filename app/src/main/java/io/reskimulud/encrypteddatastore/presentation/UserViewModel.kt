@@ -32,6 +32,15 @@ class UserViewModel(
     private var _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> = _imageUrl
 
+    private var _loadingState = MutableLiveData<Boolean>()
+    val loadingState: LiveData<Boolean> = _loadingState
+
+    private var _errorState = MutableLiveData<Boolean>()
+    val errorState: LiveData<Boolean> = _errorState
+
+    private var _message = MutableLiveData<String>()
+    val message: LiveData<String> = _message
+
     fun setUserName(name: String) {
         viewModelScope.launch {
             Log.e("ViewModel", "SetUserName")
@@ -57,23 +66,35 @@ class UserViewModel(
     }
 
     fun getRandomImage(apiKey: String) {
+        _loadingState.value = true
+        _errorState.value = false
+        _message.value = "Loading Image..."
         val client = repository.getRandomImage(apiKey)
-        client.enqueue(object: Callback<List<ImageResponse>> {
+        client.enqueue(object: Callback<ImageResponse> {
             override fun onResponse(
-                call: Call<List<ImageResponse>>,
-                response: Response<List<ImageResponse>>
+                call: Call<ImageResponse>,
+                response: Response<ImageResponse>
             ) {
                 viewModelScope.launch(Dispatchers.IO) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         _imageUrl.postValue(
-                            responseBody?.get(0)?.urls?.small
+                            responseBody?.urls?.small
                         )
+                        _loadingState.postValue(false)
+                    } else {
+                        Log.e("UserViewModel", "error 400+")
+                        _loadingState.postValue(false)
+                        _errorState.postValue(true)
+                        _message.postValue("Error!. ${response.code()}")
                     }
                 }
             }
 
-            override fun onFailure(call: Call<List<ImageResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+                _loadingState.value = false
+                _message.value = "Failed to Load Image: ${t.message}"
+                _errorState.value = true
                 Log.e("UserViewModel", t.message.toString())
             }
 

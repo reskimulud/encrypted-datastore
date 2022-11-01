@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -54,6 +57,18 @@ class MainActivity : AppCompatActivity() {
         viewModel.userApiKey.observe(this) {
             viewModel.getRandomImage(it)
         }
+
+        viewModel.loadingState.observe(this) { isLoading ->
+            viewModel.message.observe(this) { message ->
+                showMessageState(isLoading, message, binding.tvMessageLoading)
+            }
+        }
+        viewModel.errorState.observe(this) { isError ->
+            viewModel.message.observe(this) { message ->
+                Log.e("MainActivity", "error: $isError, message: $message")
+                showMessageState(isError, message, binding.tvMessageError)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -70,6 +85,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else -> false
+        }
+    }
+
+    private fun showMessageState(state: Boolean, message: String, target: TextView) {
+        if (state) {
+            target.visibility = View.VISIBLE
+            target.text = message
+        } else {
+            target.visibility = View.GONE
         }
     }
 }

@@ -7,4 +7,5 @@
     <string name="api_key">API Key</string>
     <string name="setting">Setting</string>
     <string name="image">Image</string>
+    <string name="message">Message</string>
 </resources>

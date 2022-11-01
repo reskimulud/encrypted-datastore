@@ -50,4 +50,25 @@
         tools:srcCompat="@tools:sample/avatars"
         android:contentDescription="@string/image" />
 
+    <TextView
+        android:id="@+id/tv_message_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/message"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/iv_image" />
+
+    <TextView
+        android:id="@+id/tv_message_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/message"
+        android:visibility="gone"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/iv_image" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
