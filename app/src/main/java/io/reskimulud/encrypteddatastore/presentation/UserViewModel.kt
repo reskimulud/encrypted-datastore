@@ -43,7 +43,6 @@ class UserViewModel(
 
     fun setUserName(name: String) {
         viewModelScope.launch {
-            Log.e("ViewModel", "SetUserName")
             repository.updateUserName(name)
             repository.updateUnencryptedUserName(name)
         }
@@ -51,7 +50,6 @@ class UserViewModel(
 
     fun setUserEmail(email: String) {
         viewModelScope.launch {
-            Log.e("ViewModel", "SetUserEmail")
             repository.updateUserEmail(email)
             repository.updateUnencryptedUserEmail(email)
         }
@@ -59,7 +57,6 @@ class UserViewModel(
 
     fun setUserApiKey(apiKey: String) {
         viewModelScope.launch {
-            Log.e("ViewModel", "SetUserApiKey")
             repository.updateUserApiKey(apiKey)
             repository.updateUnencryptedUserApiKey(apiKey)
         }
