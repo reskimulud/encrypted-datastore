@@ -1,8 +1,12 @@
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.reskimulud/encrypted-datastore.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.reskimulud%22%20AND%20a:%22encrypted-datastore%22)
+[![Publish to Maven Central](https://github.com/reskimulud/encrypted-datastore/actions/workflows/publish-gradle.yml/badge.svg)](https://github.com/reskimulud/encrypted-datastore/actions/workflows/publish-gradle.yml)&nbsp;
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.reskimulud/encrypted-datastore.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.reskimulud%22%20AND%20a:%22encrypted-datastore%22)&nbsp;
+![License](https://img.shields.io/github/license/reskimulud/encrypted-datastore?logo=github)&nbsp;
+![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)&nbsp;
+![Kotlin](https://img.shields.io/badge/kotlin-%230095D5.svg?logo=kotlin&logoColor=white)&nbsp;
 
 # Encrypted DataStore
 
-**Encrypted DataStore** is an extension function to encrypt and decrypt data **String** to DataStore using Advanced Encrypted Standard algorithm. 
+**Encrypted DataStore** is an extension function to encrypt and decrypt data **String** to DataStore using Advanced Encrypted Standard algorithm.
 
 # Installation
 
@@ -36,3 +40,7 @@ fun getEmail(): Flow<String> =
         preference[EMAIL_KEY] = encryptedValue
     }
 ```
+
+# License
+
+License of this project is under [`Apache 2.0`](https://github.com/reskimulud/encrypted-datastore/blob/master/LICENSE) license
