@@ -35,6 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         setupObserver()
 
+        binding.btnShowDialog.setOnClickListener {
+            EncryptDecryptProcessDialogFragment().show(supportFragmentManager, EncryptDecryptProcessDialogFragment::class.java.simpleName)
+        }
+
         supportActionBar?.title = "Profile"
     }
 
