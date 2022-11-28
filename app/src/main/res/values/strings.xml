@@ -9,4 +9,6 @@
     <string name="image">Image</string>
     <string name="message">Message</string>
     <string name="encryption_decryption_process">Encryption/Decryption Process</string>
+    <string name="decrypt">Decrypt</string>
+    <string name="encrypt">Encrypt</string>
 </resources>

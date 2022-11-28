@@ -12,12 +12,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.reskimulud.encrypteddatastore.databinding.DialogEncryptionDecryptionProcessBinding
 
 class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     private var _binding: DialogEncryptionDecryptionProcessBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var factory: ViewModelFactory
+    private val viewModel: UserViewModel by activityViewModels { factory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +35,13 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO("Create dialog")
+        binding.btnEncryptDecrypt.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    private fun showEncrypted() {
+        // TODO()
     }
 
     override fun onDestroyView() {
