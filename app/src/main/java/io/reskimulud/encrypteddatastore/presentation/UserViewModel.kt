@@ -29,6 +29,10 @@ class UserViewModel(
     val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
     val userApiKey: LiveData<String> = repository.getUserApiKey().asLiveData()
 
+    val encryptedUserName: LiveData<String> = repository.getUnDecryptedUserName().asLiveData()
+    val encryptedUserEmail: LiveData<String> = repository.getUnDecryptedUserEmail().asLiveData()
+    val encryptedUserApiKey: LiveData<String> = repository.getUnDecryptedApiKey().asLiveData()
+
     private var _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> = _imageUrl
 

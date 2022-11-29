@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.DialogEncryptionDecryptionProcessBinding
 
 class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
@@ -22,6 +23,8 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
 
     private lateinit var factory: ViewModelFactory
     private val viewModel: UserViewModel by activityViewModels { factory }
+
+    private var isDecrypted: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,13 +38,48 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        factory = ViewModelFactory.getInstance(requireActivity())
+        showEncrypted()
+
         binding.btnEncryptDecrypt.setOnClickListener {
-            dismiss()
+            if (isDecrypted) {
+                showEncrypted()
+            } else {
+                showDecrypted()
+            }
+
+            isDecrypted = !isDecrypted
         }
     }
 
+    private fun showDecrypted() {
+        viewModel.apply {
+            userName.observe(viewLifecycleOwner) {
+                binding.etDialogName.setText(it)
+            }
+            userEmail.observe(viewLifecycleOwner) {
+                binding.etDialogEmail.setText(it)
+            }
+            userApiKey.observe(viewLifecycleOwner) {
+                binding.etDialogApiKey.setText(it)
+            }
+        }
+        binding.btnEncryptDecrypt.text = resources.getString(R.string.encrypt)
+    }
+
     private fun showEncrypted() {
-        // TODO()
+        viewModel.apply {
+            encryptedUserName.observe(viewLifecycleOwner) {
+                binding.etDialogName.setText(it)
+            }
+            encryptedUserEmail.observe(viewLifecycleOwner) {
+                binding.etDialogEmail.setText(it)
+            }
+            encryptedUserApiKey.observe(viewLifecycleOwner) {
+                binding.etDialogApiKey.setText(it)
+            }
+        }
+        binding.btnEncryptDecrypt.text = resources.getString(R.string.decrypt)
     }
 
     override fun onDestroyView() {
