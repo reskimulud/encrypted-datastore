@@ -18,6 +18,7 @@ import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureEdit
 import io.github.reskimulud.encrypteddatastore.EncryptedDataStore.secureMap
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PreferencesDataStore(
     private val encryptedDataStore: DataStore<Preferences>,
@@ -56,7 +57,22 @@ class PreferencesDataStore(
             preferences[USER_API_KEY] = encryptedApiKey
         }
 
-    // Unencrypted DataStore (DataStore yang tidak dienkripsi)
+    // Unencrypted DataStore (DataStore yang tidak dienkripsi dan tidak di dekripsi)
+    fun getUnDecryptedUserName(): Flow<String> =
+        encryptedDataStore.data.map {
+            it[USER_NAME_KEY] ?: DEFAULT_VALUE
+        }
+
+    fun getUnDecryptedUserEmail(): Flow<String> =
+        encryptedDataStore.data.map {
+            it[USER_EMAIL_KEY] ?: DEFAULT_VALUE
+        }
+
+    fun getUnDecryptedApiKey(): Flow<String> =
+        encryptedDataStore.data.map {
+            it[USER_API_KEY] ?: DEFAULT_VALUE
+        }
+
     suspend fun setUnencryptedUserName(name: String) =
         unencryptedDataStore.edit {
             it[USER_NAME_KEY] = name

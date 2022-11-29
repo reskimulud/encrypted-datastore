@@ -38,7 +38,16 @@ class UserRepository(
     suspend fun updateUserApiKey(apiKey: String) =
         dataStore.setUserApiKey(apiKey)
 
-    // unencrypted datastore
+    // unencrypted and unDecrypted datastore
+    fun getUnDecryptedUserName(): Flow<String> =
+        dataStore.getUnDecryptedUserName()
+
+    fun getUnDecryptedUserEmail(): Flow<String> =
+        dataStore.getUnDecryptedUserEmail()
+
+    fun getUnDecryptedApiKey(): Flow<String> =
+        dataStore.getUnDecryptedApiKey()
+
     suspend fun updateUnencryptedUserName(name: String) =
         dataStore.setUnencryptedUserName(name)
 
