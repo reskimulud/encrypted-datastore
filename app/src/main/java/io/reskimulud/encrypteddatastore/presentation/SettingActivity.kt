@@ -2,6 +2,7 @@ package io.reskimulud.encrypteddatastore.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.viewModels
 import io.github.reskimulud.encrypteddatastore.databinding.ActivitySettingBinding
@@ -45,13 +46,18 @@ class SettingActivity : AppCompatActivity() {
         val email = binding.etEmail.text.toString().trim()
         val apiKey = binding.etApiKey.text.toString().trim()
 
-        viewModel.apply {
-            setUserName(name)
-            setUserEmail(email)
-            setUserApiKey(apiKey)
-        }
+        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 
-        finish()
-        Toast.makeText(this@SettingActivity, "Field Updated!", Toast.LENGTH_SHORT).show()
+            viewModel.apply {
+                setUserName(name)
+                setUserEmail(email)
+                setUserApiKey(apiKey)
+            }
+
+            finish()
+            Toast.makeText(this@SettingActivity, "Field Updated!", Toast.LENGTH_SHORT).show()
+        } else {
+            binding.etEmail.error = "Email not Valid!"
+        }
     }
 }
