@@ -32,6 +32,12 @@ class UserRepository(
     suspend fun updateUserEmail(email: String) =
         dataStore.setUserEmail(email)
 
+    fun getUserPhoneNumber(): Flow<String> =
+        dataStore.getUserPhoneNumber()
+
+    suspend fun updateUserPhoneNumber(phoneNumber: String) =
+        dataStore.setUserPhoneNumber(phoneNumber)
+
     fun getUserApiKey(): Flow<String> =
         dataStore.getUserApiKey()
 
@@ -45,6 +51,9 @@ class UserRepository(
     fun getUnDecryptedUserEmail(): Flow<String> =
         dataStore.getUnDecryptedUserEmail()
 
+    fun getUnDecryptUserPhoneNumber(): Flow<String> =
+        dataStore.getUnDecryptedUserPhoneNumber()
+
     fun getUnDecryptedApiKey(): Flow<String> =
         dataStore.getUnDecryptedApiKey()
 
@@ -53,6 +62,9 @@ class UserRepository(
 
     suspend fun updateUnencryptedUserEmail(email: String) =
         dataStore.setUnencryptedUserEmail(email)
+
+    suspend fun updateUnencryptedUserPhoneNumber(phoneNumber: String) =
+        dataStore.setUnencryptedUserPhoneNumber(phoneNumber)
 
     suspend fun updateUnencryptedUserApiKey(apiKey: String) =
         dataStore.setUnencryptedApiKey(apiKey)

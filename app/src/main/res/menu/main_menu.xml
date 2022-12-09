@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/phone_call"
+        android:title="@string/phone_call"
+        android:icon="@drawable/ic_call"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/setting"
         android:title="@string/setting"
         android:icon="@drawable/ic_setting"

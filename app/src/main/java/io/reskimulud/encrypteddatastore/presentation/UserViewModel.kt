@@ -27,10 +27,12 @@ class UserViewModel(
 ): ViewModel() {
     val userName: LiveData<String> = repository.getUserName().asLiveData()
     val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
+    val userPhoneNumber: LiveData<String> = repository.getUserPhoneNumber().asLiveData()
     val userApiKey: LiveData<String> = repository.getUserApiKey().asLiveData()
 
     val encryptedUserName: LiveData<String> = repository.getUnDecryptedUserName().asLiveData()
     val encryptedUserEmail: LiveData<String> = repository.getUnDecryptedUserEmail().asLiveData()
+    val encryptedUserPhoneNumber: LiveData<String> = repository.getUnDecryptUserPhoneNumber().asLiveData()
     val encryptedUserApiKey: LiveData<String> = repository.getUnDecryptedApiKey().asLiveData()
 
     private var _imageUrl = MutableLiveData<String>()
@@ -56,6 +58,13 @@ class UserViewModel(
         viewModelScope.launch {
             repository.updateUserEmail(email)
             repository.updateUnencryptedUserEmail(email)
+        }
+    }
+
+    fun setUserPhoneNumber(phoneNumber: String) {
+        viewModelScope.launch {
+            repository.updateUserPhoneNumber(phoneNumber)
+            repository.updateUnencryptedUserPhoneNumber(phoneNumber)
         }
     }
 

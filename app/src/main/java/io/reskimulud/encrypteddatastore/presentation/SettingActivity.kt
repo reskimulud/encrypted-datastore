@@ -36,6 +36,9 @@ class SettingActivity : AppCompatActivity() {
         viewModel.userEmail.observe(this) {
             if (it.isNotEmpty()) binding.etEmail.setText(it)
         }
+        viewModel.userPhoneNumber.observe(this) {
+            if (it.isNotEmpty()) binding.etPhoneNumber.setText(it)
+        }
         viewModel.userApiKey.observe(this) {
             if (it.isNotEmpty()) binding.etApiKey.setText(it)
         }
@@ -44,6 +47,7 @@ class SettingActivity : AppCompatActivity() {
     private fun onSubmitHandler() {
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()
+        val phoneNumber = binding.etPhoneNumber.text.toString().trim()
         val apiKey = binding.etApiKey.text.toString().trim()
 
         if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -51,6 +55,7 @@ class SettingActivity : AppCompatActivity() {
             viewModel.apply {
                 setUserName(name)
                 setUserEmail(email)
+                setUserPhoneNumber(phoneNumber)
                 setUserApiKey(apiKey)
             }
 

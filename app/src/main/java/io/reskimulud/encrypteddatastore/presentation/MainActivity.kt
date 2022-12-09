@@ -2,6 +2,7 @@ package io.reskimulud.encrypteddatastore.presentation
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -16,6 +18,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.bumptech.glide.Glide
 import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.ActivityMainBinding
+import io.reskimulud.encrypteddatastore.data.datastore.PreferencesDataStore
 
 val Context.encryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "encrypted_users_data")
 val Context.unencryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "unencrypted_users_data")
@@ -86,6 +89,17 @@ class MainActivity : AppCompatActivity() {
             R.id.setting -> {
                 val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.phone_call -> {
+                viewModel.userPhoneNumber.observe(this) {
+                    if (it.isNotEmpty() && it != PreferencesDataStore.DEFAULT_VALUE) {
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$it"))
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(this, "Phone Number is empty", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 true
             }
             else -> false

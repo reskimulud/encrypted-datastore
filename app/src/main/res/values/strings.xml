@@ -11,4 +11,6 @@
     <string name="encryption_decryption_process">Encryption/Decryption Process</string>
     <string name="decrypt">Decrypt</string>
     <string name="encrypt">Encrypt</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_call">Phone Call</string>
 </resources>

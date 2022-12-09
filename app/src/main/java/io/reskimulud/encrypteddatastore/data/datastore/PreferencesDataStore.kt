@@ -47,6 +47,16 @@ class PreferencesDataStore(
             preferences[USER_EMAIL_KEY] = encryptedEmail
         }
 
+    fun getUserPhoneNumber(): Flow<String> =
+        encryptedDataStore.data.secureMap(aes, DEFAULT_VALUE) {
+            it[USER_PHONE_NUMBER_KEY] ?: DEFAULT_VALUE
+        }
+
+    suspend fun setUserPhoneNumber(phoneNumber: String) =
+        encryptedDataStore.secureEdit(phoneNumber, aes) { preferences, encryptedPhoneNumber ->
+            preferences[USER_PHONE_NUMBER_KEY] = encryptedPhoneNumber
+        }
+
     fun getUserApiKey(): Flow<String> =
         encryptedDataStore.data.secureMap(aes, DEFAULT_VALUE) {
             it[USER_API_KEY] ?: DEFAULT_VALUE
@@ -68,6 +78,11 @@ class PreferencesDataStore(
             it[USER_EMAIL_KEY] ?: DEFAULT_VALUE
         }
 
+    fun getUnDecryptedUserPhoneNumber(): Flow<String> =
+        encryptedDataStore.data.map {
+            it[USER_PHONE_NUMBER_KEY] ?: DEFAULT_VALUE
+        }
+
     fun getUnDecryptedApiKey(): Flow<String> =
         encryptedDataStore.data.map {
             it[USER_API_KEY] ?: DEFAULT_VALUE
@@ -83,6 +98,11 @@ class PreferencesDataStore(
             it[USER_EMAIL_KEY] = email
         }
 
+    suspend fun setUnencryptedUserPhoneNumber(phoneNumber: String) =
+        unencryptedDataStore.edit {
+            it[USER_PHONE_NUMBER_KEY] = phoneNumber
+        }
+
     suspend fun setUnencryptedApiKey(apiKey: String) =
         unencryptedDataStore.edit {
             it[USER_API_KEY] = apiKey
@@ -91,9 +111,10 @@ class PreferencesDataStore(
     companion object {
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+        private val USER_PHONE_NUMBER_KEY = stringPreferencesKey("user_phone_number")
         private val USER_API_KEY = stringPreferencesKey("user_api_key")
 
-        private const val DEFAULT_VALUE = "empty"
+        const val DEFAULT_VALUE = "empty"
 
         @Volatile
         private var INSTANCE: PreferencesDataStore? = null
