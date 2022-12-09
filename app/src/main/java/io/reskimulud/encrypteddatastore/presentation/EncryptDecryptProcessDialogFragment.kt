@@ -60,6 +60,9 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
             userEmail.observe(viewLifecycleOwner) {
                 binding.etDialogEmail.setText(it)
             }
+            userPhoneNumber.observe(viewLifecycleOwner) {
+                binding.etDialogPhoneNumber.setText(it)
+            }
             userApiKey.observe(viewLifecycleOwner) {
                 binding.etDialogApiKey.setText(it)
             }
@@ -74,6 +77,9 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
             }
             encryptedUserEmail.observe(viewLifecycleOwner) {
                 binding.etDialogEmail.setText(it)
+            }
+            encryptedUserPhoneNumber.observe(viewLifecycleOwner) {
+                binding.etDialogPhoneNumber.setText(it)
             }
             encryptedUserApiKey.observe(viewLifecycleOwner) {
                 binding.etDialogApiKey.setText(it)
