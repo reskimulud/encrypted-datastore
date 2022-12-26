@@ -15,7 +15,9 @@ import io.github.reskimulud.encrypteddatastore.algorithm.aes.utils.Helper.trim
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.utils.Helper.xor
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.security.SecureRandom
 import java.util.*
+import javax.crypto.spec.IvParameterSpec
 
 class AES private constructor(
     builder: Builder,
@@ -24,7 +26,7 @@ class AES private constructor(
     decryptAES: DecryptAES
 ) {
     private var key: IntArray = builder.key
-    private var iv: ByteArray = builder.iv
+    private var iv: ByteArray? = builder.iv
     private var w: IntArray
 
     private val encryptAES: EncryptAES
@@ -92,7 +94,7 @@ class AES private constructor(
      */
     class Builder {
         internal lateinit var key: IntArray
-        internal lateinit var iv: ByteArray
+        internal var iv: ByteArray? = null
 
         fun setKey(key: String): Builder {
             val mKey = key.toByteArray()
@@ -113,7 +115,22 @@ class AES private constructor(
             return this
         }
 
-        fun build(): AES = getInstance(this)
+        fun build(): AES {
+            if (this.iv == null) {
+                val ivParamSpec = getIvParamSpec()
+                this.iv = ivParamSpec.iv
+            }
+
+            return getInstance(this)
+        }
+
+        // untuk testing
+        internal fun buildNonSingleton(): AES {
+            val expandKey = ExpandKey()
+            val encryptAES = EncryptAES(nb, nr)
+            val decryptAES = DecryptAES(nb, nr)
+            return AES(this, expandKey, encryptAES, decryptAES)
+        }
     }
 
     private companion object {
@@ -124,6 +141,9 @@ class AES private constructor(
         @Volatile
         private var INSTANCE: AES? = null
 
+        @Volatile
+        private var RANDOM_IV: IvParameterSpec? = null
+
         @JvmStatic
         private fun getInstance(builder: Builder): AES =
             INSTANCE ?: synchronized(this) {
@@ -132,5 +152,19 @@ class AES private constructor(
                 val decryptAES = DecryptAES(nb, nr)
                 INSTANCE ?: AES(builder, expandKey, encryptAES, decryptAES)
             }.also { INSTANCE = it }
+
+        @Suppress("SecureRandom")
+        @JvmStatic
+        private fun getIvParamSpec() : IvParameterSpec =
+            RANDOM_IV ?: synchronized(this) {
+                val random = SecureRandom.getInstance("SHA1PRNG")
+                val initSeed = ByteArray(16)
+                random.setSeed(initSeed)
+
+                val data = ByteArray(16)
+                random.nextBytes(data)
+
+                RANDOM_IV ?:  IvParameterSpec(data)
+            }.also { RANDOM_IV = it }
     }
 }
