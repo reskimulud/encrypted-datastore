@@ -7,7 +7,7 @@
     tools:context="io.reskimulud.encrypteddatastore.presentation.EncryptDecryptProcessDialogFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name"
+        android:id="@+id/data"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,101 +23,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_dialog_name"
+            android:id="@+id/et_dialog_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:focusable="false"
             android:focusableInTouchMode="true"
-            android:hint="@string/name"
+            android:gravity="top"
+            android:hint="@string/data"
             android:inputType="textMultiLine"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/email"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/name">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_dialog_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-            android:hint="@string/email"
-            android:inputType="textMultiLine"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phone_number"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_dialog_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-            android:hint="@string/phone_number"
-            android:inputType="textMultiLine"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/api_key"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phone_number">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_dialog_api_key"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-            android:hint="@string/api_key"
-            android:inputType="textMultiLine"
+            android:minLines="6"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -135,5 +50,5 @@
         android:backgroundTint="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/api_key" />
+        app:layout_constraintTop_toBottomOf="@+id/data" />
 </androidx.constraintlayout.widget.ConstraintLayout>

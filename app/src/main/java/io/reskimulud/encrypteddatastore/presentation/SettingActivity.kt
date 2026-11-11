@@ -51,13 +51,7 @@ class SettingActivity : AppCompatActivity() {
         val apiKey = binding.etApiKey.text.toString().trim()
 
         if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-
-            viewModel.apply {
-                setUserName(name)
-                setUserEmail(email)
-                setUserPhoneNumber(phoneNumber)
-                setUserApiKey(apiKey)
-            }
+            viewModel.saveProfile(name, email, phoneNumber, apiKey)
 
             finish()
             Toast.makeText(this@SettingActivity, "Field Updated!", Toast.LENGTH_SHORT).show()

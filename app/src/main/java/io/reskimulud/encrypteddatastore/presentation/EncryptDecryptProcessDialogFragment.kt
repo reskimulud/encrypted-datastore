@@ -16,6 +16,8 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.DialogEncryptionDecryptionProcessBinding
+import io.reskimulud.encrypteddatastore.data.UserProfile
+import kotlinx.serialization.json.Json
 
 class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     private var _binding: DialogEncryptionDecryptionProcessBinding? = null
@@ -24,6 +26,7 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     private lateinit var factory: ViewModelFactory
     private val viewModel: UserViewModel by activityViewModels { factory }
 
+    private val json = Json { encodeDefaults = true }
     private var isDecrypted: Boolean = false
 
     override fun onCreateView(
@@ -39,6 +42,13 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         factory = ViewModelFactory.getInstance(requireActivity())
+        viewModel.userProfile.observe(viewLifecycleOwner) {
+            if (isDecrypted) showProfile(it)
+        }
+        viewModel.encryptedData.observe(viewLifecycleOwner) {
+            if (!isDecrypted) binding.etDialogData.setText(it)
+        }
+
         showEncrypted()
 
         binding.btnEncryptDecrypt.setOnClickListener {
@@ -53,38 +63,16 @@ class EncryptDecryptProcessDialogFragment: BottomSheetDialogFragment() {
     }
 
     private fun showDecrypted() {
-        viewModel.apply {
-            userName.observe(viewLifecycleOwner) {
-                binding.etDialogName.setText(it)
-            }
-            userEmail.observe(viewLifecycleOwner) {
-                binding.etDialogEmail.setText(it)
-            }
-            userPhoneNumber.observe(viewLifecycleOwner) {
-                binding.etDialogPhoneNumber.setText(it)
-            }
-            userApiKey.observe(viewLifecycleOwner) {
-                binding.etDialogApiKey.setText(it)
-            }
-        }
+        viewModel.userProfile.value?.let { showProfile(it) }
         binding.btnEncryptDecrypt.text = resources.getString(R.string.encrypt)
     }
 
+    private fun showProfile(profile: UserProfile) {
+        binding.etDialogData.setText(json.encodeToString(UserProfile.serializer(), profile))
+    }
+
     private fun showEncrypted() {
-        viewModel.apply {
-            encryptedUserName.observe(viewLifecycleOwner) {
-                binding.etDialogName.setText(it)
-            }
-            encryptedUserEmail.observe(viewLifecycleOwner) {
-                binding.etDialogEmail.setText(it)
-            }
-            encryptedUserPhoneNumber.observe(viewLifecycleOwner) {
-                binding.etDialogPhoneNumber.setText(it)
-            }
-            encryptedUserApiKey.observe(viewLifecycleOwner) {
-                binding.etDialogApiKey.setText(it)
-            }
-        }
+        viewModel.refreshEncryptedData()
         binding.btnEncryptDecrypt.text = resources.getString(R.string.decrypt)
     }
 

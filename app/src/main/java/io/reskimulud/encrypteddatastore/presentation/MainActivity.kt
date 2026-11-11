@@ -1,6 +1,5 @@
 package io.reskimulud.encrypteddatastore.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -12,16 +11,12 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import io.github.reskimulud.encrypteddatastore.R
 import io.github.reskimulud.encrypteddatastore.databinding.ActivityMainBinding
-import io.reskimulud.encrypteddatastore.data.datastore.PreferencesDataStore
-
-val Context.encryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "encrypted_users_data")
-val Context.unencryptedDataStore: DataStore<Preferences> by preferencesDataStore(name = "unencrypted_users_data")
+import io.reskimulud.encrypteddatastore.di.Injection
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -35,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         factory = ViewModelFactory.getInstance(this)
+        lifecycleScope.launch { Injection.migrateLegacyData(applicationContext) }
 
         setupObserver()
 
@@ -93,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.phone_call -> {
                 viewModel.userPhoneNumber.observe(this) {
-                    if (it.isNotEmpty() && it != PreferencesDataStore.DEFAULT_VALUE) {
+                    if (it.isNotEmpty()) {
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$it"))
                         startActivity(intent)
                     } else {

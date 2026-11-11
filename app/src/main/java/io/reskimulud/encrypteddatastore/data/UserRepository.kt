@@ -8,67 +8,34 @@
 
 package io.reskimulud.encrypteddatastore.data
 
-import io.reskimulud.encrypteddatastore.data.datastore.PreferencesDataStore
+import androidx.datastore.core.DataStore
 import io.reskimulud.encrypteddatastore.data.network.ApiService
 import io.reskimulud.encrypteddatastore.data.network.ImageResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import retrofit2.Call
+import java.io.File
 
 class UserRepository(
-    private val dataStore: PreferencesDataStore,
-    private val apiService: ApiService
+    private val dataStore: DataStore<UserProfile>,
+    private val apiService: ApiService,
+    private val encryptedFile: File,
 ) {
 
-    // encrypted datastore
-    fun getUserName(): Flow<String> =
-        dataStore.getUserName()
+    val userProfile: Flow<UserProfile> = dataStore.data
 
-    suspend fun updateUserName(name: String) =
-        dataStore.setUserName(name)
+    suspend fun updateProfile(transform: (UserProfile) -> UserProfile) {
+        dataStore.updateData(transform)
+    }
 
-    fun getUserEmail(): Flow<String> =
-        dataStore.getUserEmail()
-
-    suspend fun updateUserEmail(email: String) =
-        dataStore.setUserEmail(email)
-
-    fun getUserPhoneNumber(): Flow<String> =
-        dataStore.getUserPhoneNumber()
-
-    suspend fun updateUserPhoneNumber(phoneNumber: String) =
-        dataStore.setUserPhoneNumber(phoneNumber)
-
-    fun getUserApiKey(): Flow<String> =
-        dataStore.getUserApiKey()
-
-    suspend fun updateUserApiKey(apiKey: String) =
-        dataStore.setUserApiKey(apiKey)
-
-    // unencrypted and unDecrypted datastore
-    fun getUnDecryptedUserName(): Flow<String> =
-        dataStore.getUnDecryptedUserName()
-
-    fun getUnDecryptedUserEmail(): Flow<String> =
-        dataStore.getUnDecryptedUserEmail()
-
-    fun getUnDecryptUserPhoneNumber(): Flow<String> =
-        dataStore.getUnDecryptedUserPhoneNumber()
-
-    fun getUnDecryptedApiKey(): Flow<String> =
-        dataStore.getUnDecryptedApiKey()
-
-    suspend fun updateUnencryptedUserName(name: String) =
-        dataStore.setUnencryptedUserName(name)
-
-    suspend fun updateUnencryptedUserEmail(email: String) =
-        dataStore.setUnencryptedUserEmail(email)
-
-    suspend fun updateUnencryptedUserPhoneNumber(phoneNumber: String) =
-        dataStore.setUnencryptedUserPhoneNumber(phoneNumber)
-
-    suspend fun updateUnencryptedUserApiKey(apiKey: String) =
-        dataStore.setUnencryptedApiKey(apiKey)
-
+    suspend fun readEncryptedFile(): String = withContext(Dispatchers.IO) {
+        if (!encryptedFile.exists()) {
+            ""
+        } else {
+            encryptedFile.readBytes().joinToString("") { "%02x".format(it.toInt() and 0xFF) }
+        }
+    }
 
     // get data from internet
     fun getRandomImage(apiKey: String): Call<ImageResponse> =
@@ -80,11 +47,12 @@ class UserRepository(
 
         @JvmStatic
         fun getInstance(
-            dataStore: PreferencesDataStore,
-            apiService: ApiService
+            dataStore: DataStore<UserProfile>,
+            apiService: ApiService,
+            encryptedFile: File,
         ): UserRepository =
             INSTANCE ?: synchronized(this) {
-                val instance = UserRepository(dataStore, apiService)
+                val instance = UserRepository(dataStore, apiService, encryptedFile)
                 INSTANCE = instance
                 instance
             }
