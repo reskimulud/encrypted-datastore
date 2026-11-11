@@ -13,4 +13,5 @@
     <string name="encrypt">Encrypt</string>
     <string name="phone_number">Phone Number</string>
     <string name="phone_call">Phone Call</string>
+    <string name="data">Data</string>
 </resources>

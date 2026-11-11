@@ -13,7 +13,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import io.reskimulud.encrypteddatastore.data.UserProfile
 import io.reskimulud.encrypteddatastore.data.UserRepository
 import io.reskimulud.encrypteddatastore.data.network.ImageResponse
 import kotlinx.coroutines.Dispatchers
@@ -24,16 +26,15 @@ import retrofit2.Response
 
 class UserViewModel(
     private val repository: UserRepository
-): ViewModel() {
-    val userName: LiveData<String> = repository.getUserName().asLiveData()
-    val userEmail: LiveData<String> = repository.getUserEmail().asLiveData()
-    val userPhoneNumber: LiveData<String> = repository.getUserPhoneNumber().asLiveData()
-    val userApiKey: LiveData<String> = repository.getUserApiKey().asLiveData()
+) : ViewModel() {
+    val userProfile: LiveData<UserProfile> = repository.userProfile.asLiveData()
+    val userName: LiveData<String> = userProfile.map { it.name }
+    val userEmail: LiveData<String> = userProfile.map { it.email }
+    val userPhoneNumber: LiveData<String> = userProfile.map { it.phoneNumber }
+    val userApiKey: LiveData<String> = userProfile.map { it.apiKey }
 
-    val encryptedUserName: LiveData<String> = repository.getUnDecryptedUserName().asLiveData()
-    val encryptedUserEmail: LiveData<String> = repository.getUnDecryptedUserEmail().asLiveData()
-    val encryptedUserPhoneNumber: LiveData<String> = repository.getUnDecryptUserPhoneNumber().asLiveData()
-    val encryptedUserApiKey: LiveData<String> = repository.getUnDecryptedApiKey().asLiveData()
+    private val _encryptedData = MutableLiveData<String>()
+    val encryptedData: LiveData<String> = _encryptedData
 
     private var _imageUrl = MutableLiveData<String>()
     val imageUrl: LiveData<String> = _imageUrl
@@ -47,31 +48,17 @@ class UserViewModel(
     private var _message = MutableLiveData<String>()
     val message: LiveData<String> = _message
 
-    fun setUserName(name: String) {
+    fun saveProfile(name: String, email: String, phoneNumber: String, apiKey: String) {
         viewModelScope.launch {
-            repository.updateUserName(name)
-            repository.updateUnencryptedUserName(name)
+            repository.updateProfile {
+                UserProfile(name, email, phoneNumber, apiKey)
+            }
         }
     }
 
-    fun setUserEmail(email: String) {
+    fun refreshEncryptedData() {
         viewModelScope.launch {
-            repository.updateUserEmail(email)
-            repository.updateUnencryptedUserEmail(email)
-        }
-    }
-
-    fun setUserPhoneNumber(phoneNumber: String) {
-        viewModelScope.launch {
-            repository.updateUserPhoneNumber(phoneNumber)
-            repository.updateUnencryptedUserPhoneNumber(phoneNumber)
-        }
-    }
-
-    fun setUserApiKey(apiKey: String) {
-        viewModelScope.launch {
-            repository.updateUserApiKey(apiKey)
-            repository.updateUnencryptedUserApiKey(apiKey)
+            _encryptedData.value = repository.readEncryptedFile()
         }
     }
 
