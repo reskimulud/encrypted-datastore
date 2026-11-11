@@ -50,6 +50,5 @@ suspend fun migrateLegacyPreferences(
     context.legacyEncryptedDataStore.edit { it.clear() }
 
     // The old app also wrote a plaintext copy of the same fields.
-    File(context.filesDir, "datastore/encrypted_users_data.preferences_pb").delete()
     File(context.filesDir, "datastore/unencrypted_users_data.preferences_pb").delete()
 }
