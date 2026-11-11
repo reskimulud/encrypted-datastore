@@ -19,7 +19,7 @@ afterEvaluate {
 
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'Extention Function to Encrypt and Decrypt DataStore with AES-256-CBC'
+                    description = 'Encrypted DataStore serializer with AES-256-GCM'
                     url = 'https://github.com/reskimulud/encrypted-datastore'
                     inceptionYear = '2022'
 
