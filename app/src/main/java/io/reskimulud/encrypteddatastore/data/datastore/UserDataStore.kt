@@ -19,7 +19,7 @@ fun createAES(): AES {
 
 fun createUserDataStore(context: Context, aes: AES): DataStore<UserProfile> =
     DataStoreFactory.create(
-        serializer = EncryptedSerializer(
+        serializer = EncryptedSerializer<UserProfile>(
             defaultValue = UserProfile(),
             serializer = UserProfile.serializer(),
             aes = aes,

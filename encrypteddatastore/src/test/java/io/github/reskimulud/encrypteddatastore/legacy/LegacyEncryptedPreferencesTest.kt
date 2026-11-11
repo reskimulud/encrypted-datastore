@@ -33,7 +33,8 @@ class LegacyEncryptedPreferencesTest {
 
     @Test
     fun `decrypts legacy json`() {
-        val serializer = MapSerializer(String.serializer(), String.serializer())
+        val serializer: MapSerializer<String, String> =
+            MapSerializer(String.serializer(), String.serializer())
 
         val value = LegacyEncryptedPreferences.decryptJson(
             aes,

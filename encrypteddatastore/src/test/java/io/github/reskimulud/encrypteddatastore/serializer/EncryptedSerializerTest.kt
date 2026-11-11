@@ -3,6 +3,7 @@ package io.github.reskimulud.encrypteddatastore.serializer
 import androidx.datastore.core.CorruptionException
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import org.junit.Assert.assertEquals
@@ -15,8 +16,9 @@ import java.io.ByteArrayOutputStream
 class EncryptedSerializerTest {
 
     private val aes = AES.Builder().setKey(KEY).build()
-    private val mapSerializer = MapSerializer(String.serializer(), String.serializer())
-    private val serializer = EncryptedSerializer(
+    private val mapSerializer: KSerializer<Map<String, String>> =
+        MapSerializer(String.serializer(), String.serializer())
+    private val serializer: EncryptedSerializer<Map<String, String>> = EncryptedSerializer(
         defaultValue = emptyMap<String, String>(),
         serializer = mapSerializer,
         aes = aes,

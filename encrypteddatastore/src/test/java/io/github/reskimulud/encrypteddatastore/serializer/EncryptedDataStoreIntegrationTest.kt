@@ -20,7 +20,7 @@ class EncryptedDataStoreIntegrationTest {
     fun `typed datastore round trips through a file`() = runBlocking {
         val file = File.createTempFile("encrypted-datastore", ".enc").also { it.delete() }
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-        val serializer = EncryptedSerializer(
+        val serializer: EncryptedSerializer<Map<String, String>> = EncryptedSerializer(
             defaultValue = emptyMap<String, String>(),
             serializer = MapSerializer(String.serializer(), String.serializer()),
             aes = AES.Builder().setKey(KEY).build(),
