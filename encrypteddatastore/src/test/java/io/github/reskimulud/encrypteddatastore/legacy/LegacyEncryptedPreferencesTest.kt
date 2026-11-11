@@ -1,6 +1,7 @@
 package io.github.reskimulud.encrypteddatastore.legacy
 
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import org.junit.Assert.assertEquals
@@ -33,7 +34,7 @@ class LegacyEncryptedPreferencesTest {
 
     @Test
     fun `decrypts legacy json`() {
-        val serializer: MapSerializer<String, String> =
+        val serializer: KSerializer<Map<String, String>> =
             MapSerializer(String.serializer(), String.serializer())
 
         val value = LegacyEncryptedPreferences.decryptJson(
