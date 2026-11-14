@@ -18,14 +18,22 @@ the reference for build results.
 
 ## Security changes
 
-Changes to the file format or to `AES` must keep the legacy CBC reader working
-for data written by 0.0.3. Add or update tests for:
+Changes to the file format or to `AES` must keep both compatibility paths
+working:
 
-- round-trip encryption and decryption
+- format version 1 (0.2.0, AES-256-GCM) must remain readable with a 32-byte key
+- format version 2 (0.3.0) must authenticate its version and algorithm header
+- the legacy CBC reader must keep working for data written by 0.0.3
+
+Add or update tests for:
+
+- round-trip encryption and decryption for AES-128, AES-192, and AES-256
 - random IV per write
-- tampered ciphertext rejection
-- legacy CBC fixtures
+- tampered ciphertext and tampered v2 header rejection
+- algorithm mismatch rejection
+- version 1 fixtures and legacy CBC fixtures
 - legacy Preferences migration
+- JSON and ProtoBuf round trips through `EncryptedSerializer`
 
 ## Pull requests
 
