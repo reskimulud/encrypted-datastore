@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+
+- AES-128-GCM and AES-192-GCM. The key length now selects the algorithm:
+  16 bytes for AES-128, 24 bytes for AES-192, and 32 bytes for AES-256.
+- `kotlinx.serialization` ProtoBuf support through the new `SerialFormat`
+  parameter on `EncryptedSerializer`.
+- Format version 2 for new writes:
+  `[0x02][algorithm id][IV][ciphertext + tag]`, with the header authenticated
+  as additional data.
+- `AES.Builder.setKey(ByteArray)` for raw keys.
+
+### Changed
+
+- New files are written with format version 2. Version 1 files written by 0.2.0
+  are still readable.
+- Gradle build scripts were converted to Kotlin DSL, with dependency versions
+  in `gradle/libs.versions.toml`.
+- Publishing configuration is now part of the Kotlin DSL build scripts.
+- Documentation now covers installation, key selection, JSON, ProtoBuf, file
+  format, and migration.
+
+### Upgrade notes
+
+- Keep a 32-byte key to read existing 0.2.0 data. Version 1 data cannot be read
+  with a 16-byte or 24-byte key.
+- Version 0.2.0 cannot read files written by 0.3.0. Do not downgrade after the
+  upgrade unless the data has been re-encrypted.
+- Changing the key length changes the algorithm and makes existing data
+  unreadable.
+- `EncryptedSerializer(json = ...)` still works. `format = Json { ... }` is the
+  new general form, and `format = ProtoBuf { ... }` selects Protocol Buffers.
+
 ## 0.2.0
 
 ### Added

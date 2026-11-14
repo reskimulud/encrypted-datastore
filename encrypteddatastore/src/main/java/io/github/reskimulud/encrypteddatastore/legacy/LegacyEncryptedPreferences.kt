@@ -22,11 +22,21 @@ import kotlinx.serialization.json.Json
 object LegacyEncryptedPreferences {
     private val json = Json { ignoreUnknownKeys = true }
 
+    /**
+     * Decrypts a hex-encoded AES-256-CBC value written by 0.0.3.
+     *
+     * The [AES] instance must use a 32-byte key and the fixed IV that was used
+     * by the old implementation. Returns null when [value] is null or empty.
+     */
     fun decryptString(aes: AES, value: String?): String? {
         if (value.isNullOrEmpty()) return null
         return aes.decryptLegacyCbc(value.hexToBytes()).decodeToString()
     }
 
+    /**
+     * Decrypts a 0.0.3 hex value and parses the resulting JSON with [serializer].
+     * Returns null when [value] is null or empty.
+     */
     fun <T> decryptJson(aes: AES, serializer: KSerializer<T>, value: String?): T? {
         val plaintext = decryptString(aes, value) ?: return null
         return json.decodeFromString(serializer, plaintext)
