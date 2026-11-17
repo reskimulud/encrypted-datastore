@@ -25,19 +25,19 @@ java {
 group = rootProject.group
 version = rootProject.version
 
-val artifactId = "encrypted-datastore"
+val targetArtifactId = "encrypted-datastore"
 
 publishing {
     publications {
         create<MavenPublication>("release") {
             groupId = rootProject.group.toString()
-            this.artifactId = artifactId
+            this.artifactId = targetArtifactId
             version = rootProject.version.toString()
 
             from(components["java"])
 
             pom {
-                name.set(artifactId)
+                name.set(targetArtifactId)
                 description.set("Encrypted DataStore serializer with AES-GCM")
                 url.set("https://github.com/reskimulud/encrypted-datastore")
                 inceptionYear.set("2022")
