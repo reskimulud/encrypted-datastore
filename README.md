@@ -13,6 +13,8 @@ a kotlinx.serialization object before DataStore writes it.
 - AES-GCM with a random 12-byte IV and a 128-bit authentication tag.
 - AES-128, AES-192, and AES-256 are selected by the key length.
 - JSON is the default format. `kotlinx.serialization` ProtoBuf is supported too.
+- The serializer accepts any `Encryptor`; `AES` is the built-in implementation.
+- Keys can come from the Android Keystore without adding an Android dependency.
 - File format: `[version][algorithm][IV][ciphertext + tag]`.
 - Tampered or corrupt files raise `CorruptionException`, so DataStore's
   `ReplaceFileCorruptionHandler` can be used.
@@ -223,6 +225,15 @@ Files written by 0.2.0 use format version 1 and are always AES-256-GCM:
 ```
 
 Version 1 is read-only. New writes always use version 2.
+
+# Upgrading from 0.3.0
+
+- Recompile against 0.4.0: `AES` is now an interface. `AES.Builder()` and the
+  `AES` methods are unchanged.
+- Rename the `EncryptedSerializer` named argument `aes` to `encryptor`.
+  Positional arguments are unaffected.
+- The file format did not change. Data written by 0.4.0 with the same key is
+  readable by 0.3.0.
 
 # Migration from 0.2.0
 

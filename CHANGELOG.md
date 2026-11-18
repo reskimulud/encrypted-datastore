@@ -20,6 +20,8 @@
 - `EncryptedSerializer` reports only authentication failures and malformed
   headers as `CorruptionException`. Other key errors, such as a locked Android
   Keystore key, are propagated to the caller.
+- `AES.Builder.setKey(SecretKey, keySizeBits)` rejects keys whose algorithm is
+  not AES.
 
 ### Upgrade notes
 
