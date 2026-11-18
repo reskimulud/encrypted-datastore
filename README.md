@@ -68,13 +68,16 @@ val aes = AES.Builder()
 val serializer = EncryptedSerializer(
     defaultValue = Settings(),
     serializer = Settings.serializer(),
-    aes = aes,
+    encryptor = aes,
 )
 ```
 
 32-byte keys are recommended unless you have a specific reason to use a
 shorter key. Changing the key length changes the algorithm and makes existing
 data unreadable.
+
+`EncryptedSerializer` accepts any `Encryptor`; `AES` is the built-in
+implementation.
 
 On Android, create the typed DataStore:
 
@@ -166,7 +169,7 @@ Then pass `ProtoBuf` instead of the default JSON:
 val serializer = EncryptedSerializer(
     defaultValue = Settings(),
     serializer = Settings.serializer(),
-    aes = aes,
+    encryptor = aes,
     format = ProtoBuf {
         encodeDefaults = true
     },
@@ -185,7 +188,7 @@ The default format is JSON with `encodeDefaults = true` and
 val serializer = EncryptedSerializer(
     defaultValue = Settings(),
     serializer = Settings.serializer(),
-    aes = aes,
+    encryptor = aes,
     json = Json {
         encodeDefaults = true
         ignoreUnknownKeys = true

@@ -14,6 +14,9 @@
   AES-GCM implementation moved to an internal class.
 - `EncryptedSerializer` delegates to an internal serializer. Its constructors
   and parameters are unchanged.
+- `EncryptedSerializer` now takes an `Encryptor` instead of `AES`. `AES` extends
+  `Encryptor`, so existing instances still work. The named argument `aes` is now
+  `encryptor`.
 - `EncryptedSerializer` reports only authentication failures and malformed
   headers as `CorruptionException`. Other key errors, such as a locked Android
   Keystore key, are propagated to the caller.
@@ -25,6 +28,8 @@
   needs no changes.
 - `EncryptedSerializer` keeps its public constructors, so no source changes are
   needed.
+- Rename the `aes =` named argument to `encryptor =`. Positional arguments are
+  unaffected.
 - Keystore keys require the key size to be declared and cannot read 0.0.3 CBC
   data.
 - File formats are unchanged. Data written by 0.3.0 and earlier is still
