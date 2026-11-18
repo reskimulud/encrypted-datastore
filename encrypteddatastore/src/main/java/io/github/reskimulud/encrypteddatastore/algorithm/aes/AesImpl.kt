@@ -9,7 +9,7 @@
 package io.github.reskimulud.encrypteddatastore.algorithm.aes
 
 import java.security.SecureRandom
-import java.security.SecretKey
+import javax.crypto.SecretKey
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec

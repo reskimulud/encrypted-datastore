@@ -9,7 +9,7 @@
 package io.github.reskimulud.encrypteddatastore.algorithm.aes
 
 import io.github.reskimulud.encrypteddatastore.algorithm.Encryptor
-import java.security.SecretKey
+import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 private const val KEY_ALGORITHM = "AES"
