@@ -22,7 +22,7 @@ fun createUserDataStore(context: Context, aes: AES): DataStore<UserProfile> =
         serializer = EncryptedSerializer<UserProfile>(
             defaultValue = UserProfile(),
             serializer = UserProfile.serializer(),
-            aes = aes,
+            encryptor = aes,
         ),
     ) {
         userDataStoreFile(context)

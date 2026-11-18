@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.reskimulud"
-version = "0.3.0"
+version = "0.4.0"
 
 extra["cipherKey"] = "0123456789abcdef0123456789abcdef"
 extra["iv"] = "abcdefghijklmnop"

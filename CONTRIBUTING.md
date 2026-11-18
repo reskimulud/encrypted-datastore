@@ -18,8 +18,8 @@ the reference for build results.
 
 ## Security changes
 
-Changes to the file format or to `AES` must keep both compatibility paths
-working:
+Changes to the file format, to `AES`, or to the `Encryptor` implementations must
+keep both compatibility paths working:
 
 - format version 1 (0.2.0, AES-256-GCM) must remain readable with a 32-byte key
 - format version 2 (0.3.0) must authenticate its version and algorithm header
@@ -34,6 +34,9 @@ Add or update tests for:
 - version 1 fixtures and legacy CBC fixtures
 - legacy Preferences migration
 - JSON and ProtoBuf round trips through `EncryptedSerializer`
+- keys from an external provider (`SecretKey`), including non-AES key rejection
+- propagation of key errors, such as a locked keystore key, instead of reporting
+  them as corruption
 
 ## Pull requests
 

@@ -10,6 +10,8 @@ plugins {
 }
 
 kotlin {
+    explicitApi()
+
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_1_8)
     }

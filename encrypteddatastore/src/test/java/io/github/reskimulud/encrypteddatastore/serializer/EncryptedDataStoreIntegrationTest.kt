@@ -23,7 +23,7 @@ class EncryptedDataStoreIntegrationTest {
         val serializer: EncryptedSerializer<Map<String, String>> = EncryptedSerializer(
             defaultValue = emptyMap<String, String>(),
             serializer = MapSerializer(String.serializer(), String.serializer()),
-            aes = AES.Builder().setKey(KEY).build(),
+            encryptor = AES.Builder().setKey(KEY).build(),
         )
         val store = DataStoreFactory.create(serializer = serializer, scope = scope) { file }
 
