@@ -20,6 +20,8 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.security.InvalidKeyException
+import javax.crypto.AEADBadTagException
 
 @OptIn(ExperimentalSerializationApi::class)
 class EncryptedSerializerTest {
@@ -152,6 +154,42 @@ class EncryptedSerializerTest {
         custom.writeTo(value, output)
 
         assertEquals(value, custom.readFrom(ByteArrayInputStream(output.toByteArray())))
+    }
+
+    @Test
+    fun `reports tag failures as corruption`() {
+        val failing = object : Encryptor {
+            override fun encrypt(plaintext: ByteArray): ByteArray = plaintext
+
+            override fun decrypt(data: ByteArray): ByteArray = throw AEADBadTagException()
+        }
+        val custom = EncryptedSerializer(
+            defaultValue = emptyMap<String, String>(),
+            serializer = mapSerializer,
+            encryptor = failing,
+        )
+
+        assertThrows(CorruptionException::class.java) {
+            runBlocking { custom.readFrom(ByteArrayInputStream(byteArrayOf(0x02))) }
+        }
+    }
+
+    @Test
+    fun `propagates key errors`() {
+        val failing = object : Encryptor {
+            override fun encrypt(plaintext: ByteArray): ByteArray = plaintext
+
+            override fun decrypt(data: ByteArray): ByteArray = throw InvalidKeyException("locked")
+        }
+        val custom = EncryptedSerializer(
+            defaultValue = emptyMap<String, String>(),
+            serializer = mapSerializer,
+            encryptor = failing,
+        )
+
+        assertThrows(InvalidKeyException::class.java) {
+            runBlocking { custom.readFrom(ByteArrayInputStream(byteArrayOf(0x02))) }
+        }
     }
 
     private companion object {
