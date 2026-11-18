@@ -238,6 +238,13 @@ class AESTest {
         }
     }
 
+    @Test
+    fun `secret key must use the aes algorithm`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            AES.Builder().setKey(SecretKeySpec(KEY_256.encodeToByteArray(), "RSA"), 256)
+        }
+    }
+
     private companion object {
         const val KEY_128 = "0123456789abcdef"
         const val KEY_192 = "0123456789abcdef01234567"
