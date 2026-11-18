@@ -32,7 +32,7 @@ private val defaultJson = Json {
  * [CorruptionException][androidx.datastore.core.CorruptionException]. Other key
  * errors, such as a locked Android Keystore key, are propagated to the caller.
  */
-class EncryptedSerializer<T> internal constructor(
+public class EncryptedSerializer<T> internal constructor(
     delegate: Serializer<T>,
 ) : Serializer<T> by delegate {
 
@@ -45,7 +45,7 @@ class EncryptedSerializer<T> internal constructor(
      * `encodeDefaults = true` and `ignoreUnknownKeys = true`. Binary formats
      * are written as raw bytes, without a UTF-8 round trip.
      */
-    constructor(
+    public constructor(
         defaultValue: T,
         serializer: KSerializer<T>,
         encryptor: Encryptor,
@@ -56,7 +56,7 @@ class EncryptedSerializer<T> internal constructor(
      * Keeps source compatibility with 0.2.0, where the last parameter was a
      * [Json] instance.
      */
-    constructor(
+    public constructor(
         defaultValue: T,
         serializer: KSerializer<T>,
         encryptor: Encryptor,

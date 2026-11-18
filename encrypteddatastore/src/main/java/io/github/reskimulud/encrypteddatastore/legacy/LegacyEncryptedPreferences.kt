@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
  * These helpers only decrypt. The application must map its old preference keys
  * to its new serializable object and write that object to the typed DataStore.
  */
-object LegacyEncryptedPreferences {
+public object LegacyEncryptedPreferences {
     private val json = Json { ignoreUnknownKeys = true }
 
     /**
@@ -28,7 +28,7 @@ object LegacyEncryptedPreferences {
      * The [AES] instance must use a 32-byte key and the fixed IV that was used
      * by the old implementation. Returns null when [value] is null or empty.
      */
-    fun decryptString(aes: AES, value: String?): String? {
+    public fun decryptString(aes: AES, value: String?): String? {
         if (value.isNullOrEmpty()) return null
         return aes.decryptLegacyCbc(value.hexToBytes()).decodeToString()
     }
@@ -37,7 +37,7 @@ object LegacyEncryptedPreferences {
      * Decrypts a 0.0.3 hex value and parses the resulting JSON with [serializer].
      * Returns null when [value] is null or empty.
      */
-    fun <T> decryptJson(aes: AES, serializer: KSerializer<T>, value: String?): T? {
+    public fun <T> decryptJson(aes: AES, serializer: KSerializer<T>, value: String?): T? {
         val plaintext = decryptString(aes, value) ?: return null
         return json.decodeFromString(serializer, plaintext)
     }

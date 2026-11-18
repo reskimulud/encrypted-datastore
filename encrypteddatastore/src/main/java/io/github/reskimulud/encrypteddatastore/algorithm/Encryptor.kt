@@ -15,12 +15,12 @@ package io.github.reskimulud.encrypteddatastore.algorithm
  * read it without extra parameters. Implementations are safe to share within a
  * process.
  */
-interface Encryptor {
+public interface Encryptor {
 
     /**
      * Encrypts [plaintext] into the payload that [decrypt] expects.
      */
-    fun encrypt(plaintext: ByteArray): ByteArray
+    public fun encrypt(plaintext: ByteArray): ByteArray
 
     /**
      * Decrypts a payload written by [encrypt].
@@ -28,5 +28,5 @@ interface Encryptor {
      * @throws java.security.GeneralSecurityException if authentication fails,
      * which usually means the key is wrong or the data was tampered with.
      */
-    fun decrypt(data: ByteArray): ByteArray
+    public fun decrypt(data: ByteArray): ByteArray
 }
