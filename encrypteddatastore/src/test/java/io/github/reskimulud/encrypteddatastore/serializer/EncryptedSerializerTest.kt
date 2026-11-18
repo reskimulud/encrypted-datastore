@@ -2,6 +2,7 @@ package io.github.reskimulud.encrypteddatastore.serializer
 
 import androidx.datastore.core.CorruptionException
 import io.github.reskimulud.encrypteddatastore.V1_ENCRYPTED_JSON_HEX
+import io.github.reskimulud.encrypteddatastore.algorithm.Encryptor
 import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
 import io.github.reskimulud.encrypteddatastore.hexToBytes
 import kotlinx.coroutines.runBlocking
@@ -29,12 +30,12 @@ class EncryptedSerializerTest {
     private val serializer: EncryptedSerializer<Map<String, String>> = EncryptedSerializer(
         defaultValue = emptyMap<String, String>(),
         serializer = mapSerializer,
-        aes = aes,
+        encryptor = aes,
     )
     private val protoSerializer: EncryptedSerializer<ProtoSettings> = EncryptedSerializer(
         defaultValue = ProtoSettings(),
         serializer = ProtoSettings.serializer(),
-        aes = aes,
+        encryptor = aes,
         format = ProtoBuf { encodeDefaults = true },
     )
 
@@ -77,7 +78,7 @@ class EncryptedSerializerTest {
         val custom = EncryptedSerializer(
             defaultValue = emptyMap<String, String>(),
             serializer = mapSerializer,
-            aes = aes,
+            encryptor = aes,
             json = Json { encodeDefaults = true },
         )
         val output = ByteArrayOutputStream()
@@ -131,6 +132,26 @@ class EncryptedSerializerTest {
             ),
             serializer.readFrom(ByteArrayInputStream(stored)),
         )
+    }
+
+    @Test
+    fun `accepts a custom encryptor`() = runBlocking {
+        val reversing = object : Encryptor {
+            override fun encrypt(plaintext: ByteArray): ByteArray = plaintext.reversedArray()
+
+            override fun decrypt(data: ByteArray): ByteArray = data.reversedArray()
+        }
+        val custom = EncryptedSerializer(
+            defaultValue = emptyMap<String, String>(),
+            serializer = mapSerializer,
+            encryptor = reversing,
+        )
+        val value = mapOf("name" to "Reski")
+        val output = ByteArrayOutputStream()
+
+        custom.writeTo(value, output)
+
+        assertEquals(value, custom.readFrom(ByteArrayInputStream(output.toByteArray())))
     }
 
     private companion object {

@@ -9,7 +9,7 @@
 package io.github.reskimulud.encrypteddatastore.serializer
 
 import androidx.datastore.core.Serializer
-import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
+import io.github.reskimulud.encrypteddatastore.algorithm.Encryptor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialFormat
 import kotlinx.serialization.json.Json
@@ -39,8 +39,7 @@ class EncryptedSerializer<T> internal constructor(
     /**
      * @param defaultValue value returned when the file does not exist yet.
      * @param serializer serializer for [T].
-     * @param aes encryption instance. The key length selects
-     * AES-128/192/256-GCM.
+     * @param encryptor encryption instance, for example `AES.Builder().build()`.
      * @param format serialization format, for example [Json] or
      * `ProtoBuf { encodeDefaults = true }`. The default is [Json] with
      * `encodeDefaults = true` and `ignoreUnknownKeys = true`. Binary formats
@@ -49,9 +48,9 @@ class EncryptedSerializer<T> internal constructor(
     constructor(
         defaultValue: T,
         serializer: KSerializer<T>,
-        aes: AES,
+        encryptor: Encryptor,
         format: SerialFormat = defaultJson,
-    ) : this(EncryptedCodec(defaultValue, serializer, aes, format))
+    ) : this(EncryptedCodec(defaultValue, serializer, encryptor, format))
 
     /**
      * Keeps source compatibility with 0.2.0, where the last parameter was a
@@ -60,7 +59,7 @@ class EncryptedSerializer<T> internal constructor(
     constructor(
         defaultValue: T,
         serializer: KSerializer<T>,
-        aes: AES,
+        encryptor: Encryptor,
         json: Json,
-    ) : this(defaultValue, serializer, aes, format = json)
+    ) : this(defaultValue, serializer, encryptor, format = json)
 }

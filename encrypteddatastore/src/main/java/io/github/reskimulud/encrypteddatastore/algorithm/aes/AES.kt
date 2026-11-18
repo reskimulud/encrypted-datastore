@@ -8,37 +8,22 @@
 
 package io.github.reskimulud.encrypteddatastore.algorithm.aes
 
+import io.github.reskimulud.encrypteddatastore.algorithm.Encryptor
 import java.security.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 private const val KEY_ALGORITHM = "AES"
 
 /**
- * Encrypts and decrypts byte arrays with AES-GCM.
+ * AES-GCM [Encryptor].
  *
  * [Builder] selects the algorithm from the key length: 16 bytes for
  * AES-128-GCM, 24 bytes for AES-192-GCM, and 32 bytes for AES-256-GCM.
  *
- * Every [encrypt] call uses a fresh random IV, so implementations are safe to
- * reuse within a process.
+ * [decryptLegacyCbc] reads values written by version 0.0.3 and is not part of
+ * the [Encryptor] contract.
  */
-interface AES {
-
-    /**
-     * Encrypts [plaintext] into the versioned payload that [decrypt] expects.
-     */
-    fun encrypt(plaintext: ByteArray): ByteArray
-
-    /**
-     * Decrypts data written by this library, including files written by 0.2.0.
-     *
-     * @throws IllegalArgumentException if the format version is unknown, the
-     * data is too short, or the data was written with a different key size.
-     * @throws java.security.GeneralSecurityException if the authentication tag
-     * does not match, which usually means the key is wrong or the data was
-     * tampered with.
-     */
-    fun decrypt(data: ByteArray): ByteArray
+interface AES : Encryptor {
 
     /**
      * Decrypts a value written by version 0.0.3 (AES-256-CBC, zero padding).

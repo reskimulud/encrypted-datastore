@@ -10,7 +10,7 @@ package io.github.reskimulud.encrypteddatastore.serializer
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import io.github.reskimulud.encrypteddatastore.algorithm.aes.AES
+import io.github.reskimulud.encrypteddatastore.algorithm.Encryptor
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialFormat
@@ -26,7 +26,7 @@ import javax.crypto.BadPaddingException
 internal class EncryptedCodec<T>(
     private val default: T,
     private val serializer: KSerializer<T>,
-    private val aes: AES,
+    private val encryptor: Encryptor,
     private val format: SerialFormat,
 ) : Serializer<T> {
 
@@ -37,7 +37,7 @@ internal class EncryptedCodec<T>(
         if (data.isEmpty()) return defaultValue
 
         val plaintext = try {
-            aes.decrypt(data)
+            encryptor.decrypt(data)
         } catch (exception: BadPaddingException) {
             throw CorruptionException("Unable to decrypt data", exception)
         } catch (exception: IllegalArgumentException) {
@@ -52,7 +52,7 @@ internal class EncryptedCodec<T>(
     }
 
     override suspend fun writeTo(t: T, output: OutputStream) {
-        output.write(aes.encrypt(encode(t)))
+        output.write(encryptor.encrypt(encode(t)))
     }
 
     private fun encode(value: T): ByteArray = when (val serialFormat = format) {

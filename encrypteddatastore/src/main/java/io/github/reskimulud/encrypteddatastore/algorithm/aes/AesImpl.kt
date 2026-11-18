@@ -30,6 +30,10 @@ import javax.crypto.spec.IvParameterSpec
  *
  * The legacy IV is only required to read values written by version 0.0.3,
  * which used AES-256-CBC with a fixed IV and zero padding.
+ *
+ * [decrypt] throws [IllegalArgumentException] for an unknown format version,
+ * data that is too short, or a different key size, and
+ * [java.security.GeneralSecurityException] when the tag does not match.
  */
 internal class AesImpl(
     private val secretKey: SecretKey,
