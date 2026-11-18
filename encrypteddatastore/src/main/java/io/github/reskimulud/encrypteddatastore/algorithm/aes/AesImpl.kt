@@ -9,10 +9,10 @@
 package io.github.reskimulud.encrypteddatastore.algorithm.aes
 
 import java.security.SecureRandom
+import java.security.SecretKey
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 /**
  * AES-GCM implementation behind [AES]. Not part of the public API; create one
@@ -32,20 +32,39 @@ import javax.crypto.spec.SecretKeySpec
  * which used AES-256-CBC with a fixed IV and zero padding.
  */
 internal class AesImpl(
-    key: ByteArray,
+    private val secretKey: SecretKey,
+    private val keySizeBytes: Int,
     iv: ByteArray?,
 ) : AES {
 
-    private val secretKey = SecretKeySpec(key, KEY_ALGORITHM)
-    private val keySizeBytes = key.size
-    private val algorithmId = algorithmIdFor(key.size)
+    private val algorithmId = algorithmIdFor(keySizeBytes)
     private val legacyIv = iv?.copyOf()
 
+    // Non-exportable keys (Android Keystore) reject a caller-supplied IV, so the
+    // provider has to generate it. SunJCE requires encoded keys, so that branch
+    // is covered on a device rather than in unit tests.
+    private val providerGeneratesIv = secretKey.encoded == null
+
     override fun encrypt(plaintext: ByteArray): ByteArray {
-        val iv = ByteArray(GCM_IV_SIZE).also(secureRandom::nextBytes)
-        val header = byteArrayOf(FORMAT_VERSION_V2, algorithmId)
         val cipher = Cipher.getInstance(GCM_TRANSFORMATION)
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(TAG_SIZE_BITS, iv))
+        val iv = if (providerGeneratesIv) {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+            val generated = requireNotNull(cipher.iv) { "Provider did not return an IV" }
+            require(generated.size == GCM_IV_SIZE) {
+                "Provider returned a ${generated.size}-byte IV; " +
+                    "this format requires $GCM_IV_SIZE bytes"
+            }
+            generated
+        } else {
+            ByteArray(GCM_IV_SIZE).also(secureRandom::nextBytes).also { bytes ->
+                cipher.init(
+                    Cipher.ENCRYPT_MODE,
+                    secretKey,
+                    GCMParameterSpec(TAG_SIZE_BITS, bytes),
+                )
+            }
+        }
+        val header = byteArrayOf(FORMAT_VERSION_V2, algorithmId)
         cipher.updateAAD(header)
         return header + iv + cipher.doFinal(plaintext)
     }
@@ -116,7 +135,6 @@ internal class AesImpl(
         const val KEY_SIZE_256 = 32
         const val BLOCK_SIZE = 16
 
-        private const val KEY_ALGORITHM = "AES"
         private const val GCM_IV_SIZE = 12
         private const val TAG_SIZE_BITS = 128
         private const val TAG_SIZE_BYTES = TAG_SIZE_BITS / 8

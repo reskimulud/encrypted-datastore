@@ -9,6 +9,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.security.GeneralSecurityException
+import javax.crypto.spec.SecretKeySpec
 
 class AESTest {
 
@@ -194,6 +195,46 @@ class AESTest {
     fun `legacy decryption rejects non-block-aligned data`() {
         assertThrows(IllegalArgumentException::class.java) {
             aes.decryptLegacyCbc(ByteArray(15))
+        }
+    }
+
+    @Test
+    fun `secret key round trips and writes a 12-byte iv`() {
+        val aes = AES.Builder()
+            .setKey(SecretKeySpec(KEY_256.encodeToByteArray(), "AES"), keySizeBits = 256)
+            .build()
+        val plaintext = "secret".encodeToByteArray()
+        val encrypted = aes.encrypt(plaintext)
+
+        assertEquals(0x02.toByte(), encrypted[0])
+        assertEquals(0x03.toByte(), encrypted[1])
+        // 2 header bytes + 12-byte IV + ciphertext + 16-byte tag.
+        assertEquals(2 + 12 + plaintext.size + 16, encrypted.size)
+        assertArrayEquals(plaintext, aes.decrypt(encrypted))
+    }
+
+    @Test
+    fun `secret key size selects the algorithm`() {
+        mapOf(
+            KEY_128 to 0x01.toByte(),
+            KEY_192 to 0x02.toByte(),
+            KEY_256 to 0x03.toByte(),
+        ).forEach { (key, expectedAlgorithmId) ->
+            val instance = AES.Builder()
+                .setKey(SecretKeySpec(key.encodeToByteArray(), "AES"), keySizeBits = key.length * 8)
+                .build()
+            val plaintext = "secret".encodeToByteArray()
+            val encrypted = instance.encrypt(plaintext)
+
+            assertEquals(expectedAlgorithmId, encrypted[1])
+            assertArrayEquals(plaintext, instance.decrypt(encrypted))
+        }
+    }
+
+    @Test
+    fun `secret key size must be 128, 192, or 256 bits`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            AES.Builder().setKey(SecretKeySpec(KEY_256.encodeToByteArray(), "AES"), 144)
         }
     }
 
