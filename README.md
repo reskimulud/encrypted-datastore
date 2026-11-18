@@ -31,13 +31,13 @@ a kotlinx.serialization object before DataStore writes it.
 Kotlin DSL:
 
 ```kotlin
-implementation("io.github.reskimulud:encrypted-datastore:0.3.0")
+implementation("io.github.reskimulud:encrypted-datastore:0.4.0")
 ```
 
 Groovy:
 
 ```groovy
-implementation 'io.github.reskimulud:encrypted-datastore:0.3.0'
+implementation 'io.github.reskimulud:encrypted-datastore:0.4.0'
 ```
 
 # Quick start

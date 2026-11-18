@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0
+
+### Changed
+
+- `AES` is now an interface. `AES.Builder` and its methods are unchanged; the
+  AES-GCM implementation moved to an internal class.
+- `EncryptedSerializer` delegates to an internal serializer. Its constructors
+  and parameters are unchanged.
+
+### Upgrade notes
+
+- `AES` changed from a class to an interface, so consumers must be recompiled
+  against 0.4.0. Kotlin code that uses `AES.Builder()` and the `AES` methods
+  needs no changes.
+- `EncryptedSerializer` keeps its public constructors, so no source changes are
+  needed.
+- File formats are unchanged. Data written by 0.3.0 and earlier is still
+  readable.
+
 ## 0.3.0
 
 ### Added
