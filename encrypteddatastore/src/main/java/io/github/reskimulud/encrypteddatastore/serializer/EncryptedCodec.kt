@@ -18,7 +18,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.StringFormat
 import java.io.InputStream
 import java.io.OutputStream
-import java.security.GeneralSecurityException
+import javax.crypto.BadPaddingException
 
 /**
  * Implementation of [EncryptedSerializer]. Not part of the public API.
@@ -38,7 +38,7 @@ internal class EncryptedCodec<T>(
 
         val plaintext = try {
             aes.decrypt(data)
-        } catch (exception: GeneralSecurityException) {
+        } catch (exception: BadPaddingException) {
             throw CorruptionException("Unable to decrypt data", exception)
         } catch (exception: IllegalArgumentException) {
             throw CorruptionException("Unable to decrypt data", exception)

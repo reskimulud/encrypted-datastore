@@ -27,6 +27,10 @@ private val defaultJson = Json {
  * on Android. Corrupt or tampered files throw
  * [androidx.datastore.core.CorruptionException], so a
  * `ReplaceFileCorruptionHandler` can be supplied to DataStore.
+ *
+ * Only authentication failures and malformed headers are reported as
+ * [CorruptionException][androidx.datastore.core.CorruptionException]. Other key
+ * errors, such as a locked Android Keystore key, are propagated to the caller.
  */
 class EncryptedSerializer<T> internal constructor(
     delegate: Serializer<T>,
